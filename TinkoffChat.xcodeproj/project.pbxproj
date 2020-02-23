@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA577BB12401BDC9001CA495 /* placeholder-user.png in Resources */ = {isa = PBXBuildFile; fileRef = AA577BAF2401BDC9001CA495 /* placeholder-user.png */; };
+		AA577BB22401BDC9001CA495 /* slr-camera-2-xxl.png in Resources */ = {isa = PBXBuildFile; fileRef = AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */; };
 		AA8BBF1723F9417200D754AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF1623F9417200D754AE /* AppDelegate.swift */; };
 		AA8BBF1B23F9417200D754AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF1A23F9417200D754AE /* ViewController.swift */; };
 		AA8BBF1E23F9417200D754AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF1C23F9417200D754AE /* Main.storyboard */; };
@@ -27,6 +29,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AA577BAF2401BDC9001CA495 /* placeholder-user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder-user.png"; sourceTree = "<group>"; };
+		AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slr-camera-2-xxl.png"; sourceTree = "<group>"; };
 		AA8BBF1323F9417200D754AE /* TinkoffChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinkoffChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BBF1623F9417200D754AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BBF1A23F9417200D754AE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -64,6 +68,8 @@
 				AA8BBF1523F9417200D754AE /* TinkoffChat */,
 				AA8BBF2F23F9417700D754AE /* TinkoffChatTests */,
 				AA8BBF1423F9417200D754AE /* Products */,
+				AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */,
+				AA577BAF2401BDC9001CA495 /* placeholder-user.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -180,8 +186,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA577BB22401BDC9001CA495 /* slr-camera-2-xxl.png in Resources */,
 				AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */,
 				AA8BBF2323F9417700D754AE /* Assets.xcassets in Resources */,
+				AA577BB12401BDC9001CA495 /* placeholder-user.png in Resources */,
 				AA8BBF1E23F9417200D754AE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

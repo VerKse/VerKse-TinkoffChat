@@ -64,12 +64,12 @@
          <EnvironmentVariable
             key = "AD_LIFESYCLE_LOGS"
             value = "consolePrint"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "UIVC_LIFECYCLE_LOGS"
             value = "consolePrint"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
