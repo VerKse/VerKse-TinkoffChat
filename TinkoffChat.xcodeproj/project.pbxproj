@@ -16,6 +16,17 @@
 		AA8BBF2323F9417700D754AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF2223F9417700D754AE /* Assets.xcassets */; };
 		AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF2423F9417700D754AE /* LaunchScreen.storyboard */; };
 		AA8BBF3123F9417700D754AE /* TinkoffChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF3023F9417700D754AE /* TinkoffChatTests.swift */; };
+		AADE9E88240A614100557835 /* purpleArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E87240A614100557835 /* purpleArrow.png */; };
+		AADE9E91240A696500557835 /* userMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E90240A696500557835 /* userMainColor.png */; };
+		AADE9E93240A699300557835 /* userWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E92240A699300557835 /* userWhite.png */; };
+		AADE9E97240A715F00557835 /* backWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E96240A715F00557835 /* backWhite.png */; };
+		AADE9EA0240BC8FA00557835 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE9E9E240BC8FA00557835 /* ConversationCell.swift */; };
+		AADE9EA1240BC8FA00557835 /* ConversationCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E9F240BC8FA00557835 /* ConversationCell.xib */; };
+		AADE9EA8240C07AF00557835 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE9EA6240C07AF00557835 /* MessageCell.swift */; };
+		AADE9EA9240C07AF00557835 /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AADE9EA7240C07AF00557835 /* MessageCell.xib */; };
+		AADE9EAB240C182300557835 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE9EAA240C182300557835 /* ConversationsListViewController.swift */; };
+		AADE9EAD240C188500557835 /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE9EAC240C188500557835 /* ConversationViewController.swift */; };
+		AADE9EAF240C18AF00557835 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE9EAE240C18AF00557835 /* ProfileViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +53,23 @@
 		AA8BBF2C23F9417700D754AE /* TinkoffChatTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TinkoffChatTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BBF3023F9417700D754AE /* TinkoffChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinkoffChatTests.swift; sourceTree = "<group>"; };
 		AA8BBF3223F9417700D754AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AADE9E87240A614100557835 /* purpleArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = purpleArrow.png; sourceTree = "<group>"; };
+		AADE9E89240A615300557835 /* Play-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Play-Bold.ttf"; sourceTree = "<group>"; };
+		AADE9E8A240A615300557835 /* Play-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Play-Regular.ttf"; sourceTree = "<group>"; };
+		AADE9E8B240A616D00557835 /* RobotoSlab-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoSlab-ExtraLight.ttf"; sourceTree = "<group>"; };
+		AADE9E8C240A616D00557835 /* RobotoSlab-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoSlab-Light.ttf"; sourceTree = "<group>"; };
+		AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoSlab-Thin.ttf"; sourceTree = "<group>"; };
+		AADE9E8F240A622900557835 /* TinkoffChat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TinkoffChat.entitlements; sourceTree = "<group>"; };
+		AADE9E90240A696500557835 /* userMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userMainColor.png; sourceTree = "<group>"; };
+		AADE9E92240A699300557835 /* userWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userWhite.png; sourceTree = "<group>"; };
+		AADE9E96240A715F00557835 /* backWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backWhite.png; sourceTree = "<group>"; };
+		AADE9E9E240BC8FA00557835 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
+		AADE9E9F240BC8FA00557835 /* ConversationCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConversationCell.xib; sourceTree = "<group>"; };
+		AADE9EA6240C07AF00557835 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		AADE9EA7240C07AF00557835 /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
+		AADE9EAA240C182300557835 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
+		AADE9EAC240C188500557835 /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
+		AADE9EAE240C18AF00557835 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +98,15 @@
 				AA8BBF1423F9417200D754AE /* Products */,
 				AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */,
 				AA577BAF2401BDC9001CA495 /* placeholder-user.png */,
+				AADE9E87240A614100557835 /* purpleArrow.png */,
+				AADE9E89240A615300557835 /* Play-Bold.ttf */,
+				AADE9E8A240A615300557835 /* Play-Regular.ttf */,
+				AADE9E8B240A616D00557835 /* RobotoSlab-ExtraLight.ttf */,
+				AADE9E8C240A616D00557835 /* RobotoSlab-Light.ttf */,
+				AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */,
+				AADE9E96240A715F00557835 /* backWhite.png */,
+				AADE9E92240A699300557835 /* userWhite.png */,
+				AADE9E90240A696500557835 /* userMainColor.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,13 +122,21 @@
 		AA8BBF1523F9417200D754AE /* TinkoffChat */ = {
 			isa = PBXGroup;
 			children = (
+				AADE9E8F240A622900557835 /* TinkoffChat.entitlements */,
 				AA8BBF1623F9417200D754AE /* AppDelegate.swift */,
 				AA8BBF1A23F9417200D754AE /* ViewController.swift */,
+				AADE9EAA240C182300557835 /* ConversationsListViewController.swift */,
+				AADE9EAC240C188500557835 /* ConversationViewController.swift */,
+				AADE9EAE240C18AF00557835 /* ProfileViewController.swift */,
 				AA8BBF1C23F9417200D754AE /* Main.storyboard */,
 				AA8BBF2223F9417700D754AE /* Assets.xcassets */,
 				AA8BBF2423F9417700D754AE /* LaunchScreen.storyboard */,
 				AA8BBF2723F9417700D754AE /* Info.plist */,
 				AA8BBF1F23F9417200D754AE /* TinkoffChat.xcdatamodeld */,
+				AADE9E9E240BC8FA00557835 /* ConversationCell.swift */,
+				AADE9E9F240BC8FA00557835 /* ConversationCell.xib */,
+				AADE9EA6240C07AF00557835 /* MessageCell.swift */,
+				AADE9EA7240C07AF00557835 /* MessageCell.xib */,
 			);
 			path = TinkoffChat;
 			sourceTree = "<group>";
@@ -186,10 +231,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AADE9E93240A699300557835 /* userWhite.png in Resources */,
 				AA577BB22401BDC9001CA495 /* slr-camera-2-xxl.png in Resources */,
+				AADE9E88240A614100557835 /* purpleArrow.png in Resources */,
 				AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */,
+				AADE9EA9240C07AF00557835 /* MessageCell.xib in Resources */,
 				AA8BBF2323F9417700D754AE /* Assets.xcassets in Resources */,
+				AADE9E91240A696500557835 /* userMainColor.png in Resources */,
 				AA577BB12401BDC9001CA495 /* placeholder-user.png in Resources */,
+				AADE9E97240A715F00557835 /* backWhite.png in Resources */,
+				AADE9EA1240BC8FA00557835 /* ConversationCell.xib in Resources */,
 				AA8BBF1E23F9417200D754AE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -208,9 +259,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AADE9EAD240C188500557835 /* ConversationViewController.swift in Sources */,
+				AADE9EA0240BC8FA00557835 /* ConversationCell.swift in Sources */,
+				AADE9EA8240C07AF00557835 /* MessageCell.swift in Sources */,
 				AA8BBF1B23F9417200D754AE /* ViewController.swift in Sources */,
 				AA8BBF2123F9417200D754AE /* TinkoffChat.xcdatamodeld in Sources */,
 				AA8BBF1723F9417200D754AE /* AppDelegate.swift in Sources */,
+				AADE9EAF240C18AF00557835 /* ProfileViewController.swift in Sources */,
+				AADE9EAB240C182300557835 /* ConversationsListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,6 +426,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TinkoffChat/TinkoffChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = TinkoffChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -388,6 +445,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TinkoffChat/TinkoffChat.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = TinkoffChat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;

@@ -13,9 +13,14 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-    
-    
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        let navigationController = UINavigationController.init(rootViewController: ConversationsListViewController())
+        self.window = UIWindow.init(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = navigationController
+        self.window?.makeKeyAndVisible()
+        
         // Override point for customization after application launch.
         if (ProcessInfo.processInfo.environment["AD_LIFESYCLE_LOGS"] == "consolePrint") {
             print ("Application moved from NOT RUNNING to INACTIVE: application")
