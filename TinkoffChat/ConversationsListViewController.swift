@@ -145,7 +145,6 @@ extension ConversationsListViewController : UITableViewDataSource {
              return UITableViewCell()
         }
         
-        
         switch indexPath.section {
         case 0:
             let user = onlineData[indexPath.row]
@@ -189,12 +188,13 @@ extension ConversationsListViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //let cell = tableView.cellForRow(at: indexPath) as! ConversationCell
+        let cell = tableView.cellForRow(at: indexPath) as! ConversationCell
         
-        let conversationViewController = ConversationViewController()
+        let conversationViewController = ConversationViewController.init(title: cell.nameLable.text ?? "Conversation")
         navigationController?.pushViewController(conversationViewController, animated: true)
     }
 }
+
 
 extension ConversationsListViewController: UITableViewDelegate {
     
