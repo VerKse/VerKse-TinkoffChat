@@ -42,12 +42,12 @@ class ConversationViewController: UIViewController{
         MessageCellModel(text: "output15", input: false),
         MessageCellModel(text: "input16", input: true),
         MessageCellModel(text: "output17", input: false),
-        MessageCellModel(text: "input12", input: true),
-        MessageCellModel(text: "output13", input: false),
-        MessageCellModel(text: "input14", input: true),
-        MessageCellModel(text: "output15", input: false),
-        MessageCellModel(text: "input16", input: true),
-        MessageCellModel(text: "output17", input: false),
+        MessageCellModel(text: "input18", input: true),
+        MessageCellModel(text: "output19", input: false),
+        MessageCellModel(text: "input20", input: true),
+        MessageCellModel(text: "output21", input: false),
+        MessageCellModel(text: "input22", input: true),
+        MessageCellModel(text: "output23", input: false),
     ]
     
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
@@ -86,16 +86,14 @@ extension ConversationViewController : UITableViewDataSource {
         
         let message = data[indexPath.row]
         cell.isUserInteractionEnabled = false
-        
+        cell.inputMessText.backgroundColor = nil
+        cell.outputMessText.backgroundColor = nil
         if (message.input) {
             cell.inputMessText.text = message.text
             cell.outputMessText.text = ""
-            cell.inputMessText.backgroundColor = nil
-            
         } else {
             cell.inputMessText.text = ""
             cell.outputMessText.text = message.text
-            cell.outputMessText.backgroundColor = nil
         }
         return cell
     }
