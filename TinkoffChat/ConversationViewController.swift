@@ -25,8 +25,8 @@ class ConversationViewController: UIViewController{
     }
     
     private var data = [
-        MessageCellModel(text: "input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 ", input: true),
-        MessageCellModel(text: "output2 output2 output2 output2 output2 output2 output2 output2 output2", input: false),
+        MessageCellModel(text: "input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1", input: true),
+        MessageCellModel(text: "output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2 output2", input: false),
         MessageCellModel(text: "output3", input: false),
         MessageCellModel(text: "input4", input: true),
         MessageCellModel(text: "input5", input: true),
@@ -63,6 +63,7 @@ class ConversationViewController: UIViewController{
         //MARK: tableView
         tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: MessageCell.self))
         view.addSubview(tableView)
+        tableView.layer.borderWidth = 0
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -82,18 +83,52 @@ extension ConversationViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageCell
+        
+        let identifier = String(describing: MessageCell.self)
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MessageCell else {
+            return UITableViewCell()
+        }
         
         let message = data[indexPath.row]
         cell.isUserInteractionEnabled = false
+        cell.layer.borderWidth = 0
         cell.inputMessText.backgroundColor = nil
         cell.outputMessText.backgroundColor = nil
+        
+        cell.inputMessText.layer.cornerRadius = 5
+        cell.outputMessText.layer.cornerRadius = 5
+        
+        
+        
         if (message.input) {
+            
+            cell.inputMessText.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
             cell.inputMessText.text = message.text
+            cell.inputMessText.isScrollEnabled = false
+            cell.inputMessText.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                cell.inputMessText.widthAnchor.constraint(lessThanOrEqualTo: cell.widthAnchor, multiplier: 0.75),
+                cell.inputMessText.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
+                
+                cell.inputMessText.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+                cell.heightAnchor.constraint(equalTo: cell.inputMessText.heightAnchor, constant: 5)
+                //cell.heightAnchor.constraint(equalTo: cell.inputMessText.heightAnchor)
+            ])
             cell.outputMessText.text = ""
         } else {
             cell.inputMessText.text = ""
+            cell.outputMessText.isScrollEnabled = false
+            cell.outputMessText.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.5)
             cell.outputMessText.text = message.text
+            cell.outputMessText.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                cell.outputMessText.widthAnchor.constraint(lessThanOrEqualTo: cell.widthAnchor, multiplier: 0.75),
+                cell.outputMessText.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
+                cell.outputMessText.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
+                cell.heightAnchor.constraint(equalTo: cell.outputMessText.heightAnchor, constant: 5)
+                //cell.heightAnchor.constraint(equalTo: cell.inputMessText.heightAnchor)
+            ])
         }
         return cell
     }

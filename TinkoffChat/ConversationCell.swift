@@ -15,8 +15,12 @@ class ConversationCell: UITableViewCell {
     @IBOutlet weak var messageLable: UILabel!
     @IBOutlet weak var dateLable: UILabel!
     
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        //let testCell = ConversationCell()
+        
         /*
         self.cellLable.translatesAutoresizingMaskIntoConstraints = false
         
@@ -31,6 +35,12 @@ class ConversationCell: UITableViewCell {
             self.messageLable.leadingAnchor.constraint(equalTo: nameLable.trailingAnchor, constant: 10)
         ])*/
         
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        //cellLable.backgroundColor = .white
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

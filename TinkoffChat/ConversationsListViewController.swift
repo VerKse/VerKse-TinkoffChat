@@ -139,21 +139,21 @@ extension ConversationsListViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //let cell = tableView.dequeueReusableCell(withIdentifier: "ConversationCell", for: indexPath)
-        guard let cell = tableView.dequeueReusableCell(withIdentifier:  String(describing: ConversationCell.self))
-            else {
-             return UITableViewCell()
+        let identifier = String(describing: ConversationCell.self)
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? ConversationCell else {
+            return UITableViewCell()
         }
         
         switch indexPath.section {
         case 0:
             let user = onlineData[indexPath.row]
             cell.backgroundColor = .yellowLight
-            makeCell(cell: cell as! ConversationCell, user: user)
+            makeCell(cell: cell, user: user)
         case 1:
             let user = historyData[indexPath.row]
             cell.backgroundColor = .white
-            makeCell(cell: cell as! ConversationCell, user: user)
+            makeCell(cell: cell, user: user)
         default:
             cell.textLabel?.text = "Cell #\(indexPath.row)"
         }

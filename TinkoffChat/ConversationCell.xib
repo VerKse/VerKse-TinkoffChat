@@ -47,7 +47,7 @@
                 <outlet property="messageLable" destination="WWa-3e-LMp" id="82m-cQ-lUK"/>
                 <outlet property="nameLable" destination="cTd-0V-tWX" id="5gs-e0-3RN"/>
             </connections>
-            <point key="canvasLocation" x="137.68115942028987" y="103.79464285714285"/>
+            <point key="canvasLocation" x="3883" y="121"/>
         </tableViewCell>
     </objects>
 </document>
