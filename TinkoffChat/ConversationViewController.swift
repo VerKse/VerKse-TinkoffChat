@@ -25,29 +25,18 @@ class ConversationViewController: UIViewController{
     }
     
     private var data = [
-        MessageCellModel(text: "input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 input1 ", input: true),
-        MessageCellModel(text: "output2 output2 output2 output2 output2 output2 output2 output2 output2", input: false),
-        MessageCellModel(text: "output3", input: false),
-        MessageCellModel(text: "input4", input: true),
-        MessageCellModel(text: "input5", input: true),
-        MessageCellModel(text: "output6", input: false),
-        MessageCellModel(text: "output7", input: false),
-        MessageCellModel(text: "input8", input: true),
-        MessageCellModel(text: "output9", input: false),
-        MessageCellModel(text: "input10", input: true),
-        MessageCellModel(text: "output11", input: false),
-        MessageCellModel(text: "input12", input: true),
-        MessageCellModel(text: "output13", input: false),
-        MessageCellModel(text: "input14", input: true),
-        MessageCellModel(text: "output15", input: false),
-        MessageCellModel(text: "input16", input: true),
-        MessageCellModel(text: "output17", input: false),
-        MessageCellModel(text: "input18", input: true),
-        MessageCellModel(text: "output19", input: false),
-        MessageCellModel(text: "input20", input: true),
-        MessageCellModel(text: "output21", input: false),
-        MessageCellModel(text: "input22", input: true),
-        MessageCellModel(text: "output23", input: false),
+        MessageCellModel(text: "Давай, подгони бакс.", input: true),
+        MessageCellModel(text: "Не, я чаевых не даю.", input: false),
+        MessageCellModel(text: "Не даёшь?", input: true),
+        MessageCellModel(text: "Не считаю нужным.", input: false),
+        MessageCellModel(text: "Не считаешь нужным?", input: true),
+        MessageCellModel(text: "Мало платят — пусть уволятся.", input: false),
+        MessageCellModel(text: "Последний жид такого не ляпнет. Значит никому не даёшь чаевых?", input: true),
+        MessageCellModel(text: "Не даю потому, что общество говорит, что я должен дать. Ну, если я вижу, что стараются — я могу дать сверху. Но давать автоматом — это для бестолковых. Они просто выполняют свои обязанности.", input: false),
+        MessageCellModel(text: "Ничего особенного.", input: false),
+        MessageCellModel(text: "А что надо особенного? Отвести тебя за угол?", input: true),
+        MessageCellModel(text: "Так, я заказал кофе. И сколько мы тут сидим? Она накатила мне всего три чашки. А я бы выпил шесть.", input: false),
+        MessageCellModel(text: "Прошу прощения, Мистер Розовый, но вот что вам не надо, так это ещё чашку кофе.", input: true)
     ]
     
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
@@ -56,13 +45,15 @@ class ConversationViewController: UIViewController{
         super.viewDidLoad()
 
         navigationItem.title = nameCVC
+        //navigationController?.navigationBar.prefersLargeTitles = true
         view.backgroundColor = .white
         
         let margins = view.layoutMarginsGuide
         
         //MARK: tableView
-        tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: MessageCell.self))
+        tableView.register(MessageCell.self, forCellReuseIdentifier: String(describing: MessageCell.self))
         view.addSubview(tableView)
+        tableView.backgroundColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -73,6 +64,7 @@ class ConversationViewController: UIViewController{
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
+        tableView.layer.borderWidth = 0
     }
 }
 
@@ -82,18 +74,27 @@ extension ConversationViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageCell
+        
+        let identifier = String(describing: MessageCell.self)
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MessageCell else {
+            return UITableViewCell()
+        }
         
         let message = data[indexPath.row]
         cell.isUserInteractionEnabled = false
         cell.inputMessText.backgroundColor = nil
         cell.outputMessText.backgroundColor = nil
+        cell.layer.borderWidth = 0
+
         if (message.input) {
             cell.inputMessText.text = message.text
+            cell.inputMessText.backgroundColor = UIColor.mainLightColor.withAlphaComponent(0.25)
             cell.outputMessText.text = ""
         } else {
-            cell.inputMessText.text = ""
             cell.outputMessText.text = message.text
+            cell.outputMessText.backgroundColor = UIColor.mainColor.withAlphaComponent(0.25)
+            cell.inputMessText.text = ""
         }
         return cell
     }

@@ -94,7 +94,7 @@ class ConversationsListViewController: UIViewController{
         ])
         
         //MARK: tableView
-        tableView.register(UINib(nibName: String(describing: ConversationCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: ConversationCell.self))
+        tableView.register(ConversationCell.self, forCellReuseIdentifier: String(describing: ConversationCell.self))
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -139,21 +139,21 @@ extension ConversationsListViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //let cell = tableView.dequeueReusableCell(withIdentifier: "ConversationCell", for: indexPath)
-        guard let cell = tableView.dequeueReusableCell(withIdentifier:  String(describing: ConversationCell.self))
-            else {
-             return UITableViewCell()
+        let identifier = String(describing: ConversationCell.self)
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? ConversationCell else {
+            return UITableViewCell()
         }
         
         switch indexPath.section {
         case 0:
             let user = onlineData[indexPath.row]
             cell.backgroundColor = .yellowLight
-            makeCell(cell: cell as! ConversationCell, user: user)
+            makeCell(cell: cell, user: user)
         case 1:
             let user = historyData[indexPath.row]
             cell.backgroundColor = .white
-            makeCell(cell: cell as! ConversationCell, user: user)
+            makeCell(cell: cell, user: user)
         default:
             cell.textLabel?.text = "Cell #\(indexPath.row)"
         }
@@ -175,7 +175,7 @@ extension ConversationsListViewController : UITableViewDataSource {
             cell.messageLable.text = user.message}
         
         let formatter = DateFormatter()
-        if(Calendar.current.compare(Date(), to: user.date, toGranularity: .day) == ComparisonResult.orderedSame) {
+        if(Calendar.current.isDateInToday(user.date)) {
             formatter.dateFormat = "HH:mm"
         } else {
             formatter.dateFormat = "dd MMM"

@@ -150,18 +150,18 @@ class ProfileViewController: UIViewController {
         
         let actionSheet = UIAlertController(title: "", message: "Настройте профиль", preferredStyle: UIAlertController.Style.actionSheet)
         
-        let cameraAction = UIAlertAction(title: "Выбрать фото из галереи", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
+        let galleryAction = UIAlertAction(title: "Выбрать фото из галереи", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
             imagePicker.sourceType = .photoLibrary
-            self.present(actionSheet, animated: true, completion: nil)
+            self.present(imagePicker, animated: true, completion: nil)
         })
         
-        let galleryAction = UIAlertAction(title: "Сделать фото", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
+        let cameraAction = UIAlertAction(title: "Сделать фото", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
             imagePicker.sourceType = .camera
             self.present(imagePicker, animated: true, completion: nil)
         })
         
         let editAction = UIAlertAction(title: "Редактировать описание", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
-            self.present(actionSheet, animated: true, completion: nil)
+            self.present(imagePicker, animated: true, completion: nil)
         })
         
         let closeAction = UIAlertAction(title: "Закрыть", style: UIAlertAction.Style.cancel){ (Action) -> Void in }
