@@ -94,7 +94,7 @@ class ConversationsListViewController: UIViewController{
         ])
         
         //MARK: tableView
-        tableView.register(UINib(nibName: String(describing: ConversationCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: ConversationCell.self))
+        tableView.register(ConversationCell.self, forCellReuseIdentifier: String(describing: ConversationCell.self))
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

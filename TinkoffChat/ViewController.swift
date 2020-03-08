@@ -22,6 +22,20 @@ extension UIColor{
     static let greyYellow = UIColor(red:1.00, green:0.98, blue:0.84, alpha:1.0)
 }
 
+extension UIFont{
+
+    class Play {
+        let Bold = UIFont(name: "Play-Bold", size: UIFont.labelFontSize)
+        let Regular = UIFont(name: "Play-Regular", size: UIFont.labelFontSize)
+    }
+    
+    class RobotoSlab{
+        let ExtraLight = UIFont(name: "RobotoSlab-ExtraLight", size: UIFont.labelFontSize)
+        let Light = UIFont(name: "RobotoSlab-Light", size: UIFont.labelFontSize)
+        let Thin = UIFont(name: "RobotoSlab-Thin", size: UIFont.labelFontSize)
+    }
+}
+
 protocol ConfigurableView {
     associatedtype ConfigurationModel
     func configure (with model: ConfigurationModel)
