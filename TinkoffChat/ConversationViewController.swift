@@ -61,9 +61,9 @@ class ConversationViewController: UIViewController{
         let margins = view.layoutMarginsGuide
         
         //MARK: tableView
-        tableView.register(UINib(nibName: String(describing: MessageCell.self), bundle: Bundle.main), forCellReuseIdentifier: String(describing: MessageCell.self))
+        tableView.register(MessageCell.self, forCellReuseIdentifier: String(describing: MessageCell.self))
         view.addSubview(tableView)
-        tableView.layer.borderWidth = 0
+        tableView.backgroundColor = .white
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
@@ -92,43 +92,18 @@ extension ConversationViewController : UITableViewDataSource {
         
         let message = data[indexPath.row]
         cell.isUserInteractionEnabled = false
-        cell.layer.borderWidth = 0
         cell.inputMessText.backgroundColor = nil
         cell.outputMessText.backgroundColor = nil
-        
-        cell.inputMessText.layer.cornerRadius = 5
-        cell.outputMessText.layer.cornerRadius = 5
-        
-        
-        
+        cell.layer.borderWidth = 0
+
         if (message.input) {
-            
-            cell.inputMessText.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
             cell.inputMessText.text = message.text
-            cell.inputMessText.isScrollEnabled = false
-            cell.inputMessText.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                cell.inputMessText.widthAnchor.constraint(lessThanOrEqualTo: cell.widthAnchor, multiplier: 0.75),
-                cell.inputMessText.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
-                
-                cell.inputMessText.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
-                cell.heightAnchor.constraint(equalTo: cell.inputMessText.heightAnchor, constant: 5)
-                //cell.heightAnchor.constraint(equalTo: cell.inputMessText.heightAnchor)
-            ])
+            cell.inputMessText.backgroundColor = UIColor.lightGray.withAlphaComponent(0.5)
             cell.outputMessText.text = ""
         } else {
-            cell.inputMessText.text = ""
-            cell.outputMessText.isScrollEnabled = false
-            cell.outputMessText.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.5)
             cell.outputMessText.text = message.text
-            cell.outputMessText.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                cell.outputMessText.widthAnchor.constraint(lessThanOrEqualTo: cell.widthAnchor, multiplier: 0.75),
-                cell.outputMessText.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
-                cell.outputMessText.centerYAnchor.constraint(equalTo: cell.centerYAnchor),
-                cell.heightAnchor.constraint(equalTo: cell.outputMessText.heightAnchor, constant: 5)
-                //cell.heightAnchor.constraint(equalTo: cell.inputMessText.heightAnchor)
-            ])
+            cell.outputMessText.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.5)
+            cell.inputMessText.text = ""
         }
         return cell
     }
