@@ -175,7 +175,7 @@ extension ConversationsListViewController : UITableViewDataSource {
             cell.messageLable.text = user.message}
         
         let formatter = DateFormatter()
-        if(Calendar.current.compare(Date(), to: user.date, toGranularity: .day) == ComparisonResult.orderedSame) {
+        if(Calendar.current.isDateInToday(user.date)) {
             formatter.dateFormat = "HH:mm"
         } else {
             formatter.dateFormat = "dd MMM"

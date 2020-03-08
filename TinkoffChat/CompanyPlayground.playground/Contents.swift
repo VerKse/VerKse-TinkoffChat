@@ -1,8 +1,14 @@
 import UIKit
 
-
-class CEO {
+class Person {
     var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+}
+
+class CEO: Person {
     var productManager: ProductManager?
     
     lazy var printManager = { [weak self] in
@@ -23,7 +29,7 @@ class CEO {
     }
 
     init(name: String, productManager: ProductManager? = nil) {
-        self.name = name
+        super.init(name: name)
         self.productManager = productManager
     }
     
@@ -32,8 +38,7 @@ class CEO {
     }
 }
 
-class ProductManager {
-    var name: String
+class ProductManager: Person {
     weak var ceo: CEO?
     var developer1: Developer?
     var developer2: Developer?
@@ -68,9 +73,11 @@ class ProductManager {
         }
     }
     
-    init(name: String, ceo: CEO? = nil,
-         developer1: Developer? = nil, developer2: Developer? = nil){
-        self.name = name
+    init(name: String,
+         ceo: CEO? = nil,
+         developer1: Developer? = nil,
+         developer2: Developer? = nil){
+        super.init(name: name)
         self.ceo = ceo
         self.developer1 = developer1
         self.developer2 = developer2
@@ -81,23 +88,22 @@ class ProductManager {
     }
 }
 
-class Developer{
-    var name: String
+class Developer: Person{
     weak var productManager: ProductManager?
     
     func sayToAnotherDeveloper(message: String) {
         print( "\(self.name):")
         let developer =  {() -> Developer? in
-            if (self.productManager?.developer2?.IsEqual(dev2: self) ?? false) {
-                return self.productManager?.developer1
-            } else { return self.productManager?.developer2}
+            if (self.productManager?.developer1?.IsEqual(dev: self) ?? false) {
+                return self.productManager?.developer2
+            } else { return self.productManager?.developer1}
         }
         print("\tHey, \(developer()?.name ?? "developer")! \(message)")
     }
     
-    func IsEqual (dev2: Developer) -> Bool{
-        if (self.name == dev2.name) { return true }
-        return true
+    func IsEqual (dev: Developer) -> Bool{
+        if (self.name == dev.name) { return true }
+        return false
     }
     
     func askMeneger(message: String) {
@@ -111,7 +117,7 @@ class Developer{
     }
     
     init(name: String, productManager: ProductManager? = nil){
-        self.name = name
+        super.init(name: name)
         self.productManager = productManager
     }
     
@@ -164,6 +170,8 @@ func conversation(company: Company){
     company.ceo.printManager()
     company.ceo.askManagerPrintCompany()
     company.ceo.askManagerPrintDevelopers()
+    company.developer1.sayToAnotherDeveloper(message: company.devMessages.pullReqDone)
+    company.developer2.sayToAnotherDeveloper(message: "Ок, сейчас гляну")
     company.developer2.sayToAnotherDeveloper(message: company.devMessages.notReallyGood)
     company.developer1.askMeneger(message: company.devMessages.askAboutTask)
     company.developer2.askCEO(message: company.devMessages.askAboutSalary)
