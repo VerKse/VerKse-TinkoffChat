@@ -40,12 +40,13 @@ class CEO: Person {
 
 class ProductManager: Person {
     weak var ceo: CEO?
+   // var developers: Developer[]?
     var developer1: Developer?
     var developer2: Developer?
     
     func printDevelopers(){
         print("\(self.name): ")
-        if (developer1 == nil && developer2 == nil){
+        /*if (developer1 == nil && developer2 == nil){
             print("\tWe haven't got any developers")
         } else {
             if (developer1 != nil){
@@ -55,6 +56,11 @@ class ProductManager: Person {
                 print("\tDeveloper: \(developer2?.name ?? "developer")")
             }
         }
+
+        if (developers != nil) {
+            for dev in developers
+            print ("Developer: \()")
+        }*/
     }
     
     func printCompany(){
