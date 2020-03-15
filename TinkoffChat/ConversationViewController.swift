@@ -41,14 +41,70 @@ class ConversationViewController: UIViewController{
     
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
     
+    var messageView: UITextView = {
+        var messageView = UITextView()
+        messageView.translatesAutoresizingMaskIntoConstraints = false
+        messageView.text = "Write a message..."
+        messageView.font = .systemFont(ofSize: 14)
+        messageView.textColor = UIColor.blueGrey500.withAlphaComponent(0.5)
+        messageView.layer.cornerRadius = 15
+        messageView.layer.borderWidth = 1
+        messageView.layer.borderColor = UIColor.blueGrey500.withAlphaComponent(0.5).cgColor
+        messageView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 15);
+        messageView.isScrollEnabled = false
+        messageView.isUserInteractionEnabled = false
+        return messageView
+    }()
+    var messageButton: UIButton = {
+        var messageButton = UIButton()
+        messageButton.translatesAutoresizingMaskIntoConstraints = false
+        messageButton.addTarget(self, action: #selector(messageButtonAction(_:)), for: .touchUpInside)
+        messageButton.translatesAutoresizingMaskIntoConstraints = false
+        messageButton.layer.cornerRadius = 20
+        messageButton.backgroundColor = .mainColor
+        messageButton.layer.opacity = 1
+        messageButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        messageButton.setImage(UIImage.init(named: "backWhite.png")?.rotate(radians: .pi/2), for: .normal)
+        
+        return messageButton
+    }()
+    var inputStack: UIStackView = {
+        var inputStack = UIStackView()
+        inputStack.translatesAutoresizingMaskIntoConstraints = false
+        return inputStack
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         navigationItem.title = nameCVC
         //navigationController?.navigationBar.prefersLargeTitles = true
-        view.backgroundColor = .white
+        navigationController?.navigationBar.backgroundColor = .white
+        view.backgroundColor = .white        
         
         let margins = view.layoutMarginsGuide
+        
+        //MARK: inputStack
+        inputStack.addSubview(messageView)
+        inputStack.addSubview(messageButton)
+        view.addSubview(inputStack)
+        NSLayoutConstraint.activate([
+            messageView.centerYAnchor.constraint(equalTo: inputStack.centerYAnchor),
+            messageView.leftAnchor.constraint(equalTo: inputStack.leftAnchor, constant: 10),
+            messageView.widthAnchor.constraint(equalTo: inputStack.widthAnchor, multiplier: 0.8),
+            
+            messageButton.bottomAnchor.constraint(equalTo: messageView.bottomAnchor),
+            messageButton.rightAnchor.constraint(equalTo: inputStack.rightAnchor, constant: -10),
+            messageButton.heightAnchor.constraint(equalToConstant: 40),
+            messageButton.widthAnchor.constraint(equalTo:  messageButton.heightAnchor),
+            
+            messageView.heightAnchor.constraint(greaterThanOrEqualTo: messageButton.heightAnchor),
+            
+            inputStack.bottomAnchor.constraint(equalTo: margins.bottomAnchor),
+            inputStack.leftAnchor.constraint(equalTo: margins.leftAnchor),
+            inputStack.rightAnchor.constraint(equalTo: margins.rightAnchor),
+            inputStack.heightAnchor.constraint(equalTo: messageView.heightAnchor, constant:50)
+        ])
         
         //MARK: tableView
         tableView.register(MessageCell.self, forCellReuseIdentifier: String(describing: MessageCell.self))
@@ -59,12 +115,18 @@ class ConversationViewController: UIViewController{
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10)
+            tableView.bottomAnchor.constraint(equalTo: inputStack.topAnchor)
         ])
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
         tableView.layer.borderWidth = 0
+        tableView.separatorStyle = .none
+    }
+    
+    //MARK: Actions
+    @objc func messageButtonAction(_ sender : UIButton) {
+        print("Message sending...")
     }
 }
 
@@ -89,11 +151,11 @@ extension ConversationViewController : UITableViewDataSource {
 
         if (message.input) {
             cell.inputMessText.text = message.text
-            cell.inputMessText.backgroundColor = UIColor.mainLightColor.withAlphaComponent(0.25)
+            cell.inputMessText.backgroundColor = UIColor.blueGrey500.withAlphaComponent(0.25)
             cell.outputMessText.text = ""
         } else {
             cell.outputMessText.text = message.text
-            cell.outputMessText.backgroundColor = UIColor.mainColor.withAlphaComponent(0.25)
+            cell.outputMessText.backgroundColor = UIColor.blueGrey500.withAlphaComponent(0.75)
             cell.inputMessText.text = ""
         }
         return cell
@@ -102,8 +164,6 @@ extension ConversationViewController : UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
-    
 }
 
 

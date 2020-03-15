@@ -23,8 +23,9 @@
 		AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF2423F9417700D754AE /* LaunchScreen.storyboard */; };
 		AA8BBF3123F9417700D754AE /* TinkoffChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF3023F9417700D754AE /* TinkoffChatTests.swift */; };
 		AA997E802415299F00BCF999 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA997E7F2415299F00BCF999 /* ConversationCell.swift */; };
+		AADA7D84241C08B700616239 /* userMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AADA7D83241C08B700616239 /* userMainColor.png */; };
 		AADE9E88240A614100557835 /* purpleArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E87240A614100557835 /* purpleArrow.png */; };
-		AADE9E91240A696500557835 /* userMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E90240A696500557835 /* userMainColor.png */; };
+		AADE9E91240A696500557835 /* userMainColor_old.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E90240A696500557835 /* userMainColor_old.png */; };
 		AADE9E93240A699300557835 /* userWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E92240A699300557835 /* userWhite.png */; };
 		AADE9E97240A715F00557835 /* backWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E96240A715F00557835 /* backWhite.png */; };
 		AADE9EAB240C182300557835 /* ConversationsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AADE9EAA240C182300557835 /* ConversationsListViewController.swift */; };
@@ -59,13 +60,14 @@
 		AA8BBF3023F9417700D754AE /* TinkoffChatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TinkoffChatTests.swift; sourceTree = "<group>"; };
 		AA8BBF3223F9417700D754AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA997E7F2415299F00BCF999 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
+		AADA7D83241C08B700616239 /* userMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userMainColor.png; sourceTree = "<group>"; };
 		AADE9E87240A614100557835 /* purpleArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = purpleArrow.png; sourceTree = "<group>"; };
 		AADE9E89240A615300557835 /* Play-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Play-Bold.ttf"; sourceTree = "<group>"; };
 		AADE9E8A240A615300557835 /* Play-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Play-Regular.ttf"; sourceTree = "<group>"; };
 		AADE9E8B240A616D00557835 /* RobotoSlab-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoSlab-ExtraLight.ttf"; sourceTree = "<group>"; };
 		AADE9E8C240A616D00557835 /* RobotoSlab-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoSlab-Light.ttf"; sourceTree = "<group>"; };
 		AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "RobotoSlab-Thin.ttf"; sourceTree = "<group>"; };
-		AADE9E90240A696500557835 /* userMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userMainColor.png; sourceTree = "<group>"; };
+		AADE9E90240A696500557835 /* userMainColor_old.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userMainColor_old.png; sourceTree = "<group>"; };
 		AADE9E92240A699300557835 /* userWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userWhite.png; sourceTree = "<group>"; };
 		AADE9E96240A715F00557835 /* backWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backWhite.png; sourceTree = "<group>"; };
 		AADE9EAA240C182300557835 /* ConversationsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsListViewController.swift; sourceTree = "<group>"; };
@@ -107,7 +109,8 @@
 				AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */,
 				AADE9E96240A715F00557835 /* backWhite.png */,
 				AADE9E92240A699300557835 /* userWhite.png */,
-				AADE9E90240A696500557835 /* userMainColor.png */,
+				AADA7D83241C08B700616239 /* userMainColor.png */,
+				AADE9E90240A696500557835 /* userMainColor_old.png */,
 			);
 			sourceTree = "<group>";
 		};
@@ -126,10 +129,10 @@
 				AA8BBF1623F9417200D754AE /* AppDelegate.swift */,
 				AA8BBF1A23F9417200D754AE /* ViewController.swift */,
 				AADE9EAA240C182300557835 /* ConversationsListViewController.swift */,
-				AADE9EAC240C188500557835 /* ConversationViewController.swift */,
-				AADE9EAE240C18AF00557835 /* ProfileViewController.swift */,
 				AA997E7F2415299F00BCF999 /* ConversationCell.swift */,
+				AADE9EAC240C188500557835 /* ConversationViewController.swift */,
 				AA0636C424140B8B0090E2EA /* MessageCell.swift */,
+				AADE9EAE240C18AF00557835 /* ProfileViewController.swift */,
 				AA8BBF1C23F9417200D754AE /* Main.storyboard */,
 				AA8BBF2223F9417700D754AE /* Assets.xcassets */,
 				AA8BBF2423F9417700D754AE /* LaunchScreen.storyboard */,
@@ -235,10 +238,11 @@
 				AA577BB22401BDC9001CA495 /* slr-camera-2-xxl.png in Resources */,
 				AA0636BF2413F47B0090E2EA /* RobotoSlab-ExtraLight.ttf in Resources */,
 				AADE9E88240A614100557835 /* purpleArrow.png in Resources */,
+				AADA7D84241C08B700616239 /* userMainColor.png in Resources */,
 				AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */,
 				AA0636C12413F47B0090E2EA /* RobotoSlab-Thin.ttf in Resources */,
 				AA8BBF2323F9417700D754AE /* Assets.xcassets in Resources */,
-				AADE9E91240A696500557835 /* userMainColor.png in Resources */,
+				AADE9E91240A696500557835 /* userMainColor_old.png in Resources */,
 				AA577BB12401BDC9001CA495 /* placeholder-user.png in Resources */,
 				AADE9E97240A715F00557835 /* backWhite.png in Resources */,
 				AA0636C02413F47B0090E2EA /* RobotoSlab-Light.ttf in Resources */,

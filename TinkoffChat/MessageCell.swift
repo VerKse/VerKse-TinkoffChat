@@ -17,7 +17,7 @@ class MessageCell: UITableViewCell {
         textView.isScrollEnabled = false
         textView.layer.cornerRadius = 20
         textView.font = .systemFont(ofSize: 14)
-        textView.textContainerInset = UIEdgeInsets(top: 15, left: 15, bottom: 15, right: 10);
+        textView.textContainerInset = UIEdgeInsets(top: 15, left: 10, bottom: 15, right: 15);
         return textView
     }()
     

@@ -73,6 +73,8 @@ class ConversationsListViewController: UIViewController{
         
         navigationItem.title = "Tinkoff Chat"
         view.backgroundColor = .white
+        navigationController?.navigationBar.prefersLargeTitles = false
+
         
         let margins = view.layoutMarginsGuide
         let profileButton = UIButton()
@@ -83,6 +85,10 @@ class ConversationsListViewController: UIViewController{
         profileButton.setImage(UIImage.init(named: "userMainColor.png"), for: .normal)
         profileButton.backgroundColor = .white
         profileButton.layer.cornerRadius = 30
+        profileButton.layer.shadowColor = UIColor.mainColor.cgColor
+        profileButton.layer.shadowOpacity = 0.3
+        profileButton.layer.shadowOffset = .zero
+        profileButton.layer.shadowRadius = 10
         let insets = CGFloat(10)
         profileButton.imageEdgeInsets = UIEdgeInsets(top: insets, left: insets, bottom: insets, right: insets)
         profileButton.translatesAutoresizingMaskIntoConstraints = false
@@ -168,7 +174,7 @@ extension ConversationsListViewController : UITableViewDataSource {
             cell.messageLable.font = .boldSystemFont(ofSize: 16)
             cell.messageLable.text = user.message
         } else if (user.message.isEmpty) {
-            cell.messageLable.font = UIFont(name:"Avenir", size: 10)
+            cell.messageLable.font = .systemFont(ofSize: 16)
             cell.messageLable.text = "No messages yet"
         } else {
             cell.messageLable.font = .systemFont(ofSize: 16)
@@ -192,6 +198,7 @@ extension ConversationsListViewController : UITableViewDataSource {
         
         let conversationViewController = ConversationViewController.init(title: cell.nameLable.text ?? "Conversation")
         navigationController?.pushViewController(conversationViewController, animated: true)
+        
     }
 }
 
