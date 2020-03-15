@@ -14,7 +14,7 @@ struct UserInfo{
     var name: String
     var about: String
     var image: String
-    var changed:Changed?
+    var changed: Changed?
 }
 
 
@@ -64,8 +64,7 @@ class OperationDataManager : Operation {
     }
     
     func save() {
-        
-        if input != fileDataIntoString(fileName) {
+        if changed {
             stringToFileData(input, fileName: fileName)
         }
     }
@@ -102,7 +101,6 @@ class ProfileViewController: UIViewController {
     lazy var editNameField = UITextField()
     lazy var editAboutField = UITextField()
     lazy var editAvatarField = UITextField()
-    //lazy var editAvatarStack = UIStackView()
     lazy var warningObj = UIView()
     lazy var warningLable = UILabel()
     lazy var gcdButton = UIButton()
@@ -123,7 +121,7 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         regularMode()
         view.addSubview(nameLable)
-        view.addSubview(aboutText)
+        backView.addSubview(aboutText)
         view.addSubview(editButton)
         view.addSubview(backView)
         avatarStack.addSubview(avatarImg)
@@ -494,6 +492,7 @@ class ProfileViewController: UIViewController {
             operationQueue.addOperation (nameOp)
             operationQueue.addOperation (aboutOp)
             operationQueue.addOperation (imgOp)
+            
             operationQueue.waitUntilAllOperationsAreFinished()
             
             let mainOpQueue = OperationQueue.main
@@ -504,7 +503,7 @@ class ProfileViewController: UIViewController {
                 self.spinner.isHidden = true
                 self.present(self.sucsessAlert, animated: true)
             }
-        }catch{
+        }catch is Error {
             self.failAlert.addAction(UIAlertAction(title: "Повторить", style: .default,
                                                    handler: {action in self.operationAction()
             }))
