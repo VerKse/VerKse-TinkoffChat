@@ -503,7 +503,7 @@ class ProfileViewController: UIViewController {
                 self.spinner.isHidden = true
                 self.present(self.sucsessAlert, animated: true)
             }
-        }catch is Error {
+        }catch {
             self.failAlert.addAction(UIAlertAction(title: "Повторить", style: .default,
                                                    handler: {action in self.operationAction()
             }))
