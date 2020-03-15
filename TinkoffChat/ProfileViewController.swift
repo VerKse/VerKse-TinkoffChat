@@ -11,32 +11,33 @@ import UIKit
 var DIR = "/Users/main/Documents/Tinkoff/TinkoffChat/"
 
 struct UserInfo{
-    let name: String
-    let about: String
-    let image: String
+    var name: String
+    var about: String
+    var image: String
+    var changed:Changed?
 }
+
+
 
 class GCDDataManager{
     
     func save(info: UserInfo, completion: @escaping (Bool)-> Void){
         DispatchQueue.global().async {
-            if info.name != fileDataIntoString("name") {
+            if info.changed?.name ?? true {
                 stringToFileData(info.name, fileName: "name")
             }
-            if info.about != fileDataIntoString("about") {
+            if info.changed?.about ?? true {
                 stringToFileData(info.about, fileName: "about")
             }
-            if info.image != fileDataIntoString("img") {
+            if info.changed?.img ?? true {
                 stringToFileData(info.image, fileName: "img")
             }
-            //этот малыш просто чтобы показать как крутится spinner
-            sleep(5)
             completion(true)
         }
     }
     
     func uploadUserInfo(completion: @escaping (UserInfo)->Void){
-        DispatchQueue.main.async{
+        DispatchQueue.global().async{
             let userInfo = UserInfo.init(name: fileDataIntoString("name") ?? "Name",
                                          about: fileDataIntoString("about") ?? "Bio",
                                          image: fileDataIntoString("img") ?? "userMainColor.png")
@@ -46,16 +47,43 @@ class GCDDataManager{
 }
 
 class OperationDataManager : Operation {
+    var input: String
+    var fileName: String
+    var changed: Bool
+    var output: String?
     
-    var inputName:UITextField
-    var outputName:String?
-    
-    init(inputName:UITextField){
-        self.inputName = inputName
+    init(input:String, fileName:String, changed: Bool){
+        self.input = input
+        self.fileName = fileName
+        self.changed = changed
     }
     
-    override func main(){
-        stringToFileData(inputName.text ?? "text", fileName: "name")
+    override func main() {
+        save()
+        output = upload()
+    }
+    
+    func save() {
+        
+        if input != fileDataIntoString(fileName) {
+            stringToFileData(input, fileName: fileName)
+        }
+    }
+    
+    func upload() -> String{
+        return fileDataIntoString(fileName) ?? ""
+    }
+}
+
+class Changed{
+    var name: Bool = false
+    var about: Bool = false
+    var img: Bool = false
+    
+    func clean(){
+        self.name = false
+        self.about = false
+        self.img = false
     }
 }
 
@@ -81,6 +109,14 @@ class ProfileViewController: UIViewController {
     lazy var operationButton = UIButton()
     lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
     
+    let sucsessAlert = UIAlertController(title: "Изменения успешно сохранены",
+                                         message: "Абсолютно успешно.",
+                                         preferredStyle: .alert)
+    let failAlert = UIAlertController(title: "Изменения не успешно сохранены",
+                                      message: "Абсолютно не успешно.",
+                                      preferredStyle: .alert)
+    let changed = Changed()
+    
     //MARK: Properties
     override func viewDidLoad() {
         
@@ -97,6 +133,18 @@ class ProfileViewController: UIViewController {
         
         let margins = view.layoutMarginsGuide
         
+        //MARK: sucsessAlert
+        sucsessAlert.addAction(UIAlertAction(title: "👌", style: .default,
+                                             handler: {action in self.regularMode()
+        }))
+        
+        //MARK: failAlert
+        failAlert.addAction(UIAlertAction(title: "👌", style: .default,
+                                          handler: {action in
+                                            self.regularMode()
+                                            return
+        }))
+        
         //MARK: spinner
         spinner.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(spinner)
@@ -104,7 +152,7 @@ class ProfileViewController: UIViewController {
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         spinner.isHidden = true
         spinner.backgroundColor = UIColor.black.withAlphaComponent(0.75)
-            
+        
         //MARK: avatarStack + avatarImg
         view.sendSubviewToBack(avatarStack)
         avatarStack.translatesAutoresizingMaskIntoConstraints = false
@@ -150,7 +198,7 @@ class ProfileViewController: UIViewController {
             nameLable.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -10),
             nameLable.centerYAnchor.constraint(lessThanOrEqualTo: backView.topAnchor, constant: 50)
         ])
-        nameLable.text = fileDataIntoString("name")// "Иван Иванов"
+        nameLable.text = fileDataIntoString("name") ?? "Иван Иванов"
         nameLable.font = UIFont.boldSystemFont(ofSize: 30)
         nameLable.textColor = .mainColor
         
@@ -158,7 +206,7 @@ class ProfileViewController: UIViewController {
         view.bringSubviewToFront(aboutText)
         aboutText.translatesAutoresizingMaskIntoConstraints = false
         aboutText.backgroundColor = backView.backgroundColor
-        aboutText.text = fileDataIntoString("about") //"\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
+        aboutText.text = fileDataIntoString("about") ?? "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
         NSLayoutConstraint.activate([
             aboutText.leftAnchor.constraint(equalTo: backView.leftAnchor, constant: 20),
             aboutText.rightAnchor.constraint(equalTo: backView.rightAnchor, constant: -10),
@@ -261,9 +309,6 @@ class ProfileViewController: UIViewController {
             editAboutField.rightAnchor.constraint(equalTo: editNameField.rightAnchor),
             editAboutField.widthAnchor.constraint(equalTo: aboutText.widthAnchor)
         ])
-        
-        
-        
     }
     
     func regularMode(){
@@ -346,9 +391,10 @@ class ProfileViewController: UIViewController {
         let editAction = UIAlertAction(title: "Редактировать описание", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
             
             self.editMode()
-            self.editNameField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: UIControl.Event.editingChanged)
-            self.editAboutField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: UIControl.Event.editingChanged)
-            self.editAvatarField.addTarget(self, action: #selector(self.textFieldDidChange(_:)), for: UIControl.Event.editingChanged)
+            self.changed.clean()
+            self.editNameField.addTarget(self, action: #selector(self.nameFieldDidChange), for: UIControl.Event.editingChanged)
+            self.editAboutField.addTarget(self, action: #selector(self.aboutFieldDidChange(_:)), for: UIControl.Event.editingChanged)
+            self.editAvatarField.addTarget(self, action: #selector(self.imgFieldDidChange(_:)), for: UIControl.Event.editingChanged)
         })
         
         let closeAction = UIAlertAction(title: "Закрыть", style: UIAlertAction.Style.cancel){ (Action) -> Void in }
@@ -367,98 +413,103 @@ class ProfileViewController: UIViewController {
         present(actionSheet, animated: true, completion: nil)
     }
     
-    @objc func textFieldDidChange(_ textField: UITextField){
+    @objc func nameFieldDidChange(_ textField: UITextField){
         self.gcdButton.isEnabled = true
         self.operationButton.isEnabled = true
+        self.changed.name = true
+    }
+    @objc func aboutFieldDidChange(_ textField: UITextField){
+        self.gcdButton.isEnabled = true
+        self.operationButton.isEnabled = true
+        self.changed.about = true
+    }
+    @objc func imgFieldDidChange(_ textField: UITextField){
+        self.gcdButton.isEnabled = true
+        self.operationButton.isEnabled = true
+        self.changed.img = true
     }
     
     @objc func gcdButtonAction(_ sender: UIButton!) {
+        gcdAction()
+    }
+    
+    func gcdAction(){
         gcdButton.isEnabled = false
         operationButton.isEnabled = false
         
         view.bringSubviewToFront(spinner)
         spinner.startAnimating()
         spinner.isHidden = false
-        let gcd = GCDDataManager()
         let userInfo = UserInfo.init(name: editNameField.text ?? "",
                                      about: editAboutField.text ?? "",
-                                     image: editAvatarField.text ?? "")
+                                     image: editAvatarField.text ?? "",
+                                     changed: changed)
+        
+        let gcd = GCDDataManager()
         gcd.save(info: userInfo) {isSucces in
             guard isSucces else{
-                let alert = UIAlertController(title: "Изменения не успешно сохранены",
-                                              message: "Абсолютно не успешно.",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "👌", style: .default,
-                                              handler: {action in
-                    self.regularMode()
-                    return
+                self.failAlert.addAction(UIAlertAction(title: "Повторить", style: .default,
+                                                       handler: {action in self.gcdAction()
                 }))
-                alert.addAction(UIAlertAction(title: "Повторить", style: .default,
-                                              handler: {action in
-                               gcd.save(info: userInfo) {isSucces in
-                           guard isSucces else{
-                               let alert = UIAlertController(title: "И снова не получилось.",
-                                                             message: "",
-                                                             preferredStyle: .alert)
-                               alert.addAction(UIAlertAction(title: "👌", style: .default,
-                                                             handler: {action in
-                                   self.regularMode()
-                               }))
-                               return
-                           }
-                           gcd.uploadUserInfo { userInfo in
-                               self.nameLable.text = userInfo.name
-                               self.aboutText.text = userInfo.about
-                               self.avatarImg.image = UIImage.init(named: userInfo.image)
-                               self.spinner.isHidden = true
-                               let alert = UIAlertController(title: "Изменения успешно сохранены",
-                                                             message: "Абсолютно успешно.",
-                                                             preferredStyle: .alert)
-                               alert.addAction(UIAlertAction(title: "👌", style: .default,
-                                                             handler: {action in self.regularMode()
-                               }))
-                               self.present(alert, animated: true)
-                           }
-                       }
-                }))
+                self.present(self.failAlert, animated: true)
                 return
             }
             gcd.uploadUserInfo { userInfo in
-                self.nameLable.text = userInfo.name
-                self.aboutText.text = userInfo.about
-                self.avatarImg.image = UIImage.init(named: userInfo.image)
-                self.spinner.isHidden = true
-                let alert = UIAlertController(title: "Изменения успешно сохранены",
-                                              message: "Абсолютно успешно.",
-                                              preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "👌", style: .default,
-                                              handler: {action in self.regularMode()
-                }))
-
-                self.present(alert, animated: true)
+                DispatchQueue.main.async {
+                    self.spinner.isHidden = true
+                    self.nameLable.text = userInfo.name
+                    self.aboutText.text = userInfo.about
+                    self.avatarImg.image = UIImage.init(named: userInfo.image)
+                    self.present(self.sucsessAlert, animated: true)
+                }
             }
         }
     }
     
     @objc func operationButtonAction(_ sender: UIButton!) {
+        operationAction()
+    }
+    
+    func operationAction(){
         gcdButton.isEnabled = false
         operationButton.isEnabled = false
-        print ("operationButtonAction")
-        
-        
-        let saveQueue = OperationQueue()
-        let uploadQueue = OperationQueue()
-        
-        for data in [editNameField, editAboutField]{
-            let operation = OperationDataManager.init(inputName: data)
-            operation.completionBlock = {
-                
+        view.bringSubviewToFront(spinner)
+        spinner.startAnimating()
+        spinner.isHidden = false
+        let userInfo = UserInfo.init(name: editNameField.text ?? "basicName",
+                                     about: editAboutField.text ?? "basicAbout",
+                                     image: editAvatarField.text ?? "userMainColor_old.png",
+                                     changed: changed)
+        do{
+            let operationQueue = OperationQueue()
+            let nameOp = OperationDataManager.init(input: userInfo.name,
+                                                   fileName: "name",
+                                                   changed: userInfo.changed?.name ?? true)
+            let aboutOp = OperationDataManager.init(input: userInfo.about,
+                                                    fileName: "about",
+                                                    changed: userInfo.changed?.about ?? true)
+            let imgOp = OperationDataManager.init(input: userInfo.image,
+                                                  fileName: "img",
+                                                  changed: userInfo.changed?.img ?? true)
+            operationQueue.addOperation (nameOp)
+            operationQueue.addOperation (aboutOp)
+            operationQueue.addOperation (imgOp)
+            operationQueue.waitUntilAllOperationsAreFinished()
+            
+            let mainOpQueue = OperationQueue.main
+            mainOpQueue.addOperation{
+                self.nameLable.text = nameOp.output
+                self.aboutText.text = aboutOp.output
+                self.avatarImg.image = UIImage.init(named: imgOp.output ?? "userMainColor.png")
+                self.spinner.isHidden = true
+                self.present(self.sucsessAlert, animated: true)
             }
+        }catch{
+            self.failAlert.addAction(UIAlertAction(title: "Повторить", style: .default,
+                                                   handler: {action in self.operationAction()
+            }))
+            self.present(self.failAlert, animated: true)
         }
-        saveQueue.waitUntilAllOperationsAreFinished()
-        uploadQueue.waitUntilAllOperationsAreFinished()
-        
-        regularMode()
     }
     
     

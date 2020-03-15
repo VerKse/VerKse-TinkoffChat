@@ -1,1 +1,1 @@
-userMainColor_old
+userMainColor.png
