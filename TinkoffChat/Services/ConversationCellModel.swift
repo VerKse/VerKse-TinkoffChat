@@ -12,3 +12,12 @@ struct ConversationCellModel {
     let channel: Channel
     let hasUnreadMessage : Bool
 }
+
+protocol ConversationCellConfiguration {
+    associatedtype ConversationCellModel
+    
+    var channel : Channel {get set}
+    var hasUnreadMessage : Bool?{get set}
+    
+    func configure(with model: ConversationCellModel)
+}

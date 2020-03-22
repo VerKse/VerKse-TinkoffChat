@@ -15,8 +15,15 @@ struct MessageCellModel  {
 }
 
 protocol MessageCellConfiguration: class {
-    var text: String? {get set}
-    var input : Bool? {get set}
+    
+    associatedtype MessageCellModel
+    
+    var content: String {get set}
+    var created: Date {get set}
+    var senderId: String {get set}
+    var senderName: String {get set}
+    
+    func configure(with model: ConversationCellModel)
 }
 
 

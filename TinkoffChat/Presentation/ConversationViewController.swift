@@ -95,12 +95,12 @@ class ConversationViewController: UIViewController{
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
-        
         reference.addSnapshotListener { [weak self] snapshot, error in
             self?.spinner.isHidden = false
             self?.messageList.removeAll()
             for doc in snapshot!.documents {
                 let date = doc.data()["created"] as! Timestamp
+                
                 let newMess = MessageCellModel(content: doc.data()["content"] as! String,
                                                created: date.dateValue(),
                                                senderId: stringFromAny(doc.data()["senderID"]),
@@ -115,10 +115,12 @@ class ConversationViewController: UIViewController{
             }))
             self?.spinner.isHidden = true
             self?.tableView.reloadData()
-            self?.tableView.scrollToRow(at: IndexPath(item:(self?.messageList.count ?? 1) - 1, section: 0), at: .bottom, animated: false)
+            if (self?.messageList.count != 0) {
+                self?.tableView.scrollToRow(at: IndexPath(item:(self?.messageList.count ?? 1) - 1, section: 0), at: .bottom, animated: false)
+            }
         }
         
-        navigationController?.navigationBar.backgroundColor = .white
+        //navigationController?.navigationBar.backgroundColor = .white
         view.backgroundColor = .white        
         
         let margins = view.layoutMarginsGuide

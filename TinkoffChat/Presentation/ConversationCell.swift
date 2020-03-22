@@ -10,15 +10,6 @@ import Foundation
 import UIKit
 
 
-protocol ConversationCellConfiguration : class {
-    var name: String?{get set}
-    var message : String?{get set}
-    var date : Date?{get set}
-    var isOnline : Bool?{get set}
-    var hasUnreadMessage : Bool?{get set}
-}
-
-
 class ConversationCell: UITableViewCell {
     
     var avatarImg: UIImageView = {

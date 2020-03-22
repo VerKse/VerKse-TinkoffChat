@@ -16,10 +16,13 @@ class ConversationsListViewController: UIViewController{
     
     private var onlineData: [ConversationCellModel] = []
     private var historyData: [ConversationCellModel] = []
-    private lazy var db = Firestore.firestore()
-    private lazy var reference = db.collection("channels")
+    //private lazy var db = Firestore.firestore()
+    //private lazy var reference = db.collection("channels")
+    
+    private lazy var firebaseService = FirebaseService(GeneralFirebaseService)
     
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var profileButton = UIButton()
     private lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
     private lazy var testChannel = ""
     private lazy var channelList = [Channel]()
@@ -29,6 +32,14 @@ class ConversationsListViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let margins = view.layoutMarginsGuide
+        let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.mainColor]
+        navigationController?.navigationBar.titleTextAttributes = textAttributes
+        navigationItem.title = "Tinkoff Chat"
+        view.backgroundColor = .white
+        navigationController?.navigationBar.prefersLargeTitles = false
+
+        
         //MARK: spinner
         spinner.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(spinner)
@@ -36,6 +47,7 @@ class ConversationsListViewController: UIViewController{
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         spinner.isHidden = false
+        
         
         FirebaseApp.configure()
         reference.addSnapshotListener { [weak self] snapshot, error in
@@ -62,15 +74,7 @@ class ConversationsListViewController: UIViewController{
             self!.spinner.isHidden = true
             self!.tableView.reloadData()
         }
-        
-        
-        navigationItem.title = "Tinkoff Chat"
-        view.backgroundColor = .white
-        navigationController?.navigationBar.prefersLargeTitles = false
-        
-        
-        let margins = view.layoutMarginsGuide
-        let profileButton = UIButton()
+    
         
         //MARK: profileButton
         profileButton.addTarget(self, action: #selector(profileButtonAction(_:)), for: .touchUpInside)
@@ -122,7 +126,7 @@ class ConversationsListViewController: UIViewController{
         NSLayoutConstraint.activate([
             tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
             tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: profileButton.topAnchor, constant: -20)
         ])
         tableView.dataSource = self
