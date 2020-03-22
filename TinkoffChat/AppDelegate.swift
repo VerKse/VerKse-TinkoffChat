@@ -8,6 +8,14 @@
 
 import UIKit
 import CoreData
+import Firebase
+
+func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    
+    FirebaseApp.configure()
+    return true
+}
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
