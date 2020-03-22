@@ -16,6 +16,8 @@ protocol FirebaseService{
 }
 
 final class GeneralFirebaseService: FirebaseService{
+
+    
     
     var db: Firestore = Firestore.firestore()
     var collection: String = ""
@@ -24,29 +26,25 @@ final class GeneralFirebaseService: FirebaseService{
         self.collection = collection
     }
     
-    func getData() -> ([ConversationCellModel])
-    {
+    func getData() -> ([ConversationCellModel]) {
         let reference = db.collection(collection)
         var data = [ConversationCellModel]()
         var channelList = [Channel]()
         
         FirebaseApp.configure()
         reference.addSnapshotListener { snapshot, error in
-        
             for doc in snapshot!.documents {
                 let date = doc.data()["lastActivity"] as? Timestamp
                 let newChannel = Channel(identifier: doc.documentID,
-                                         name: doc.data()["name"] as! String,
-                                         lastMessage: doc.data()["lastMessage"] as? String,
+                                         name: stringFromAny(doc.data()["name"]),
+                                         lastMessage: stringFromAny(doc.data()["lastMessage"]),
                                          lastActivity: date?.dateValue())
                 channelList.append(newChannel)
             }
-            
             for channel in channelList{
                 data.append(ConversationCellModel(channel: channel, hasUnreadMessage: false))
             }
         }
-        
         return data
     }
     

@@ -16,10 +16,10 @@ class ConversationsListViewController: UIViewController{
     
     private var onlineData: [ConversationCellModel] = []
     private var historyData: [ConversationCellModel] = []
-    //private lazy var db = Firestore.firestore()
-    //private lazy var reference = db.collection("channels")
+    private lazy var db = Firestore.firestore()
+    private lazy var reference = db.collection("channels")
     
-    private lazy var firebaseService = FirebaseService(GeneralFirebaseService)
+    //private lazy var firebaseService = FirebaseService()
     
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
     private lazy var profileButton = UIButton()
@@ -40,6 +40,7 @@ class ConversationsListViewController: UIViewController{
         navigationController?.navigationBar.prefersLargeTitles = false
 
         
+        
         //MARK: spinner
         spinner.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(spinner)
@@ -59,8 +60,8 @@ class ConversationsListViewController: UIViewController{
             for doc in snapshot!.documents {
                 let date = doc.data()["lastActivity"] as? Timestamp
                 let newChannel = Channel(identifier: doc.documentID,
-                                         name: doc.data()["name"] as! String,
-                                         lastMessage: doc.data()["lastMessage"] as? String,
+                                         name: stringFromAny(doc.data()["name"]),
+                                         lastMessage: stringFromAny(doc.data()["lastMessage"]),
                                          lastActivity: date?.dateValue())
                 self?.channelList.append(newChannel)
             }

@@ -132,15 +132,23 @@ class ChannelAddViewController: UIViewController {
     @objc func commitButtonAction(_ sender : UIButton) {
         // MARK: добавить обработку ошибки
         let id = Int(Date.init(timeIntervalSinceNow: 0).timeIntervalSince1970)+(UIDevice.current.identifierForVendor!.hashValue)
-        reference.addDocument(data: ["identifier": id,
-                                     "name": self.nameTextField.text,
-                                     "lastMessage": self.messageTextField.text,
-                                     "lastActivity": Date.init(timeIntervalSinceNow: 0)])
-        let newMessage = MessageCellModel(content: self.messageTextField.text ?? "",
-                                          created: .init(timeIntervalSinceNow: 0),
+        let date = Date.init(timeIntervalSinceNow: 0)
+        let newChannel = Channel(identifier: String(id),
+                                 name: stringFromAny(self.nameTextField.text),
+                                 lastMessage: stringFromAny(self.messageTextField.text),
+                                 lastActivity: date)
+        reference.addDocument(data: ["identifier": newChannel.identifier,
+                                     "name": newChannel.name as Any,
+                                     "lastMessage": newChannel.lastMessage as Any,
+                                     "lastActivity": newChannel.lastActivity as Any])
+        let newMessage = MessageCellModel(content: stringFromAny(self.messageTextField.text),
+                                          created: date,
                                           senderId: String(UIDevice.current.identifierForVendor!.hashValue),
                                           senderName: "Shtirliz")
-        reference.addDocument(data: newMessage.toDict)
+        let messegeReference: CollectionReference = {
+            return db.collection("channels").document(String(id)).collection("messages")
+        }()
+        messegeReference.addDocument(data: newMessage.toDict)
         //MARK: sucsessAlert
         sucsessAlert.addAction(UIAlertAction(title: "👌", style: .default,
                                              handler: {action in self.backAction()
