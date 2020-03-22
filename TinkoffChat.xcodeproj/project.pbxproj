@@ -37,6 +37,7 @@
 		AAE7132D2426495500A2C6FF /* penMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AAE7132C2426495500A2C6FF /* penMainColor.png */; };
 		AAE7132F242649A700A2C6FF /* ChannelAddViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE7132E242649A700A2C6FF /* ChannelAddViewController.swift */; };
 		AAE7133124264C4600A2C6FF /* tickMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AAE7133024264C4600A2C6FF /* tickMainColor.png */; };
+		AAF1B9322427EA7800658E60 /* MessagesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF1B9312427EA7800658E60 /* MessagesProtocol.swift */; };
 		AAFDEDB02427937800AB3FA5 /* MessageCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFDEDAF2427937800AB3FA5 /* MessageCellModel.swift */; };
 		AAFDEDB22427941500AB3FA5 /* ConversationCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAFDEDB12427941500AB3FA5 /* ConversationCellModel.swift */; };
 		D0812B37E8EC12D18730ABFC /* Pods_TinkoffChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8484C86936E284EA31613FC7 /* Pods_TinkoffChatTests.framework */; };
@@ -90,6 +91,7 @@
 		AAE7132C2426495500A2C6FF /* penMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penMainColor.png; sourceTree = "<group>"; };
 		AAE7132E242649A700A2C6FF /* ChannelAddViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelAddViewController.swift; sourceTree = "<group>"; };
 		AAE7133024264C4600A2C6FF /* tickMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tickMainColor.png; sourceTree = "<group>"; };
+		AAF1B9312427EA7800658E60 /* MessagesProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesProtocol.swift; sourceTree = "<group>"; };
 		AAFDEDAF2427937800AB3FA5 /* MessageCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellModel.swift; sourceTree = "<group>"; };
 		AAFDEDB12427941500AB3FA5 /* ConversationCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCellModel.swift; sourceTree = "<group>"; };
 		B59F638FF1BB33FE2327205E /* Pods-TinkoffChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoffChatTests.release.xcconfig"; path = "Target Support Files/Pods-TinkoffChatTests/Pods-TinkoffChatTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 				AA0CA9C924228FEC006E91A8 /* GoogleService-Info.plist */,
 				AA8BBF1F23F9417200D754AE /* TinkoffChat.xcdatamodeld */,
 				AA8BBF2223F9417700D754AE /* Assets.xcassets */,
+				AAF1B9312427EA7800658E60 /* MessagesProtocol.swift */,
 				AAB6564A2427656000349583 /* FirebaseProtocol.swift */,
 				AAFDEDB12427941500AB3FA5 /* ConversationCellModel.swift */,
 				AAFDEDAF2427937800AB3FA5 /* MessageCellModel.swift */,
@@ -416,6 +419,7 @@
 				AA8BBF1723F9417200D754AE /* AppDelegate.swift in Sources */,
 				AADE9EAF240C18AF00557835 /* ProfileViewController.swift in Sources */,
 				AADE9EAB240C182300557835 /* ConversationsListViewController.swift in Sources */,
+				AAF1B9322427EA7800658E60 /* MessagesProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

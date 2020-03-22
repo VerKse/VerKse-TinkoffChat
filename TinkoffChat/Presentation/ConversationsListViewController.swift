@@ -15,7 +15,7 @@ class ConversationsListViewController: UIViewController{
     private lazy var db = Firestore.firestore()
     private lazy var reference = db.collection("channels")
     
-    //private lazy var firebaseService = FirebaseService()
+    private lazy var firebaseService = GeneralFirebaseService(collection: "channel")
     
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
     private lazy var profileButton = UIButton()
@@ -35,8 +35,10 @@ class ConversationsListViewController: UIViewController{
         view.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = false
         
-        //var firebaseService = FirebaseService(GeneralFirebaseService)
+        //firebaseService.setData(tableView: tableView, onlineData: onlineData, historyData:historyData)
         
+        spinner.isHidden = true
+                
         
         //MARK: spinner
         spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -114,9 +116,6 @@ class ConversationsListViewController: UIViewController{
             addChannelButton.heightAnchor.constraint(equalTo: addChannelButton.widthAnchor)
         ])
         
-        //MARK: view
-        //view.addSubview(niceView)
-        
         //MARK: tableView
         tableView.register(ConversationCell.self, forCellReuseIdentifier: String(describing: ConversationCell.self))
         view.addSubview(tableView)
@@ -154,6 +153,11 @@ class ConversationsListViewController: UIViewController{
             }
             onlineData = onlineData.sorted { (ccm1, ccm2) -> Bool in
                 if (ccm1.channel.lastActivity! < ccm2.channel.lastActivity!){
+                return false
+                } else {return true}
+            }
+            historyData = historyData.sorted { (ccm1, ccm2) -> Bool in
+                if (ccm1.channel.name! > ccm2.channel.name!){
                 return false
                 } else {return true}
             }

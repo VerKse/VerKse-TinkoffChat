@@ -32,6 +32,8 @@ class ConversationViewController: UIViewController{
         return db.collection("channels").document(channelIdentifier).collection("messages")
     }()
     
+    //private lazy var messageService = GeneralMessagesService(channel: channel ?? Channel(identifier: "", name: "", lastMessage: "", lastActivity: Date.init(timeIntervalSinceNow: 0)))
+    
     private lazy var messageView: UITextView = {
         var messageView = UITextView()
         messageView.translatesAutoresizingMaskIntoConstraints = false
@@ -77,8 +79,6 @@ class ConversationViewController: UIViewController{
         tableView.estimatedRowHeight = 44
         tableView.layer.borderWidth = 0
         tableView.separatorStyle = .none
-        //let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: Selector("tapOnScreen"))
-        //tableView.addGestureRecognizer(tap)
         return tableView
     }()
     
@@ -97,6 +97,8 @@ class ConversationViewController: UIViewController{
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
+        
+        //messageService.setData(tableView: tableView)
         reference.addSnapshotListener { [weak self] snapshot, error in
             self?.spinner.isHidden = false
             self?.messageList.removeAll()
@@ -168,6 +170,7 @@ class ConversationViewController: UIViewController{
                                           senderId: String(UIDevice.current.identifierForVendor!.hashValue),
                                           senderName: "Shtirliz"
         )
+        //messageService.saveData(message: newMessage)
         reference.addDocument(data: newMessage.toDict)
         messageView.text = ""
     }
