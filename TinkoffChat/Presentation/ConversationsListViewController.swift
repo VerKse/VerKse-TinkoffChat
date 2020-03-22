@@ -8,10 +8,6 @@
 
 import UIKit
 import Firebase
-
-
-
-
 class ConversationsListViewController: UIViewController{
     
     private var onlineData: [ConversationCellModel] = []
@@ -38,7 +34,8 @@ class ConversationsListViewController: UIViewController{
         navigationItem.title = "Tinkoff Chat"
         view.backgroundColor = .white
         navigationController?.navigationBar.prefersLargeTitles = false
-
+        
+        //var firebaseService = FirebaseService(GeneralFirebaseService)
         
         
         //MARK: spinner

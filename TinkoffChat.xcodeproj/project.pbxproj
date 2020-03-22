@@ -201,9 +201,9 @@
 				AADE9EAA240C182300557835 /* ConversationsListViewController.swift */,
 				AA997E7F2415299F00BCF999 /* ConversationCell.swift */,
 				AADE9EAC240C188500557835 /* ConversationViewController.swift */,
+				AA0636C424140B8B0090E2EA /* MessageCell.swift */,
 				AADE9EAE240C18AF00557835 /* ProfileViewController.swift */,
 				AAE7132E242649A700A2C6FF /* ChannelAddViewController.swift */,
-				AA0636C424140B8B0090E2EA /* MessageCell.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
