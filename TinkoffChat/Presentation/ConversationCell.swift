@@ -68,7 +68,7 @@ class ConversationCell: UITableViewCell {
             dateLable.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.15),
             dateLable.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10)
         ])
-        avatarImg.layer.cornerRadius = 30//avatarImg.frame.height/2
+        avatarImg.layer.cornerRadius = avatarImg.frame.height*0.5
     }
     
     override func layoutSubviews() {

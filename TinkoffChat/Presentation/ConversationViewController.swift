@@ -98,8 +98,8 @@ class ConversationViewController: UIViewController{
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         
-        //messageService.setData(tableView: tableView)
-        reference.addSnapshotListener { [weak self] snapshot, error in
+        //messageService.updateChannelList(tableView: tableView)
+        reference.addSnapshotListener { [weak self]snapshot, error in
             self?.spinner.isHidden = false
             self?.messageList.removeAll()
             for doc in snapshot!.documents {
@@ -170,7 +170,7 @@ class ConversationViewController: UIViewController{
                                           senderId: String(UIDevice.current.identifierForVendor!.hashValue),
                                           senderName: "Shtirliz"
         )
-        //messageService.saveData(message: newMessage)
+        //messageService.sendMessage(message: newMessage)
         reference.addDocument(data: newMessage.toDict)
         messageView.text = ""
     }

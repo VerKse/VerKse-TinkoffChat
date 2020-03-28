@@ -8,103 +8,114 @@
 
 import UIKit
 
-var DIR = "/Users/main/Documents/Tinkoff/TinkoffChat/"
-
 struct UserInfo{
     var name: String
-    var about: String
-    var image: String
-    var changed: Changed?
-}
-
-class GCDDataManager{
-    
-    func save(info: UserInfo, completion: @escaping (Bool)-> Void){
-        DispatchQueue.global().async {
-            if info.changed?.name ?? true {
-                stringToFileData(info.name, fileName: "name")
-            }
-            if info.changed?.about ?? true {
-                stringToFileData(info.about, fileName: "about")
-            }
-            if info.changed?.img ?? true {
-                stringToFileData(info.image, fileName: "img")
-            }
-            completion(true)
-        }
-    }
-    
-    func uploadUserInfo(completion: @escaping (UserInfo)->Void){
-        DispatchQueue.global().async{
-            let userInfo = UserInfo.init(name: fileDataIntoString("name") ?? "Name",
-                                         about: fileDataIntoString("about") ?? "Bio",
-                                         image: fileDataIntoString("img") ?? "userMainColor.png")
-            completion(userInfo)
-        }
-    }
-}
-
-class OperationDataManager : Operation {
-    var input: String
-    var fileName: String
-    var changed: Bool
-    var output: String?
-    
-    init(input:String, fileName:String, changed: Bool){
-        self.input = input
-        self.fileName = fileName
-        self.changed = changed
-    }
-    
-    override func main() {
-        save()
-        output = upload()
-    }
-    
-    func save() {
-        if changed {
-            stringToFileData(input, fileName: fileName)
-        }
-    }
-    
-    func upload() -> String{
-        return fileDataIntoString(fileName) ?? ""
-    }
-}
-
-class Changed{
-    var name: Bool = false
-    var about: Bool = false
-    var img: Bool = false
-    
-    func clean(){
-        self.name = false
-        self.about = false
-        self.img = false
-    }
+    var about: String?
+    var image: String?
 }
 
 class ProfileViewController: UIViewController {
     
-    lazy var userName = ""
-    lazy var regularView = UIView()
-    lazy var avatarImg = UIImageView()
-    lazy var nameLable = UILabel()
-    lazy var aboutText = UITextView()
-    lazy var editButton = UIButton()
-    lazy var backView = UIView()
-    lazy var backButton = UIButton()
-    lazy var avatarStack = UIStackView()
-    lazy var imageName: String = "userMainColor.png"
+    var user: User?
+
+    private lazy var avatarImg: UIImageView = {
+        var image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.image = UIImage.init(named: "userMainColor.png")
+        return image
+    }()
     
-    lazy var editNameField = UITextField()
-    lazy var editAboutField = UITextField()
-    lazy var editAvatarField = UITextField()
-    lazy var warningObj = UIView()
-    lazy var warningLable = UILabel()
-    lazy var gcdButton = UIButton()
-    lazy var operationButton = UIButton()
-    lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
+    private lazy var nameLable: UILabel = {
+        var lable = UILabel()
+        lable.translatesAutoresizingMaskIntoConstraints = false
+        lable.text = "Иван Иванов"
+        lable.font = UIFont.boldSystemFont(ofSize: 30)
+        lable.textColor = .mainColor
+        return lable
+    }()
+    
+    private lazy var aboutText: UITextView = {
+        var textView = UITextView()
+        textView.font = UIFont.systemFont(ofSize: 18)
+        textView.isScrollEnabled = false
+        textView.isEditable = false
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.backgroundColor = backView.backgroundColor
+        textView.text = "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
+        return textView
+    }()
+    
+    private lazy var editButton: UIButton = {
+        var button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: 50),
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 100)
+        ])
+        button.backgroundColor = .mainColor
+        button.layer.cornerRadius = 25
+        button.layer.borderColor = UIColor.black.cgColor
+        button.titleEdgeInsets = UIEdgeInsets(top: 10,left: 10,bottom: 10,right: 10)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.setTitleColor(.mainColor, for: .selected)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true;
+        button.setBackgroundColor(color: .mainLightColor, forState: .disabled)
+        button.addTarget(self, action: #selector(editButtonAction(_:)), for: .touchUpInside)
+        button.setTitle("EDIT", for: .normal)
+        return button
+    }()
+    
+    private lazy var saveButton: UIButton = {
+        var button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.heightAnchor.constraint(equalToConstant: 50),
+            button.widthAnchor.constraint(greaterThanOrEqualToConstant: 100)
+        ])
+        button.backgroundColor = .mainColor
+        button.layer.cornerRadius = 25
+        button.layer.borderColor = UIColor.black.cgColor
+        button.titleEdgeInsets = UIEdgeInsets(top: 10,left: 10,bottom: 10,right: 10)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.setTitleColor(.mainColor, for: .selected)
+        button.titleLabel?.adjustsFontSizeToFitWidth = true;
+        button.setBackgroundColor(color: .mainLightColor, forState: .disabled)
+        button.addTarget(self, action: #selector(saveButtonAction(_:)), for: .touchUpInside)
+        button.setTitle("SAVE", for: .normal)
+        return button
+    }()
+    
+    private lazy var backView: UIView = {
+        var view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 30
+        view.layer.shadowColor = UIColor.mainColor.cgColor
+        view.layer.shadowOpacity = 0.3
+        view.layer.shadowOffset = .zero
+        view.layer.shadowRadius = 10
+        return view
+    }()
+    
+    private lazy var backButton: UIButton = {
+        var button = UIButton()
+        button.addTarget(self, action: #selector(backButtonAction(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 15
+        button.backgroundColor = .mainColor
+        button.layer.opacity = 1
+        button.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        button.setImage(UIImage.init(named: "backWhite.png"), for: .normal)
+        return button
+    }()
+    
+    private lazy var editNameField = UITextField()
+    private lazy var editAboutField = UITextField()
+    private lazy var editAvatarField = UITextField()
+    
+    private lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
     
     let sucsessAlert = UIAlertController(title: "Изменения успешно сохранены",
                                          message: "Абсолютно успешно.",
@@ -112,23 +123,38 @@ class ProfileViewController: UIViewController {
     let failAlert = UIAlertController(title: "Изменения не успешно сохранены",
                                       message: "Абсолютно не успешно.",
                                       preferredStyle: .alert)
-    let changed = Changed()
+    var fetchedResultsController = CoreDataManager.instance.fetchedResultsController(entityName: "User", keyForSort: "name")
     
     //MARK: Properties
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error)
+        }
+        
+        let userList = fetchedResultsController.fetchedObjects
+        
+        if (userList?.isEmpty ?? true) {
+            user?.name = "Ivan"
+            user?.about = ""
+        } else { user = userList?[0] as? User }
+        
+        nameLable.text = user?.name
+        aboutText.text = user?.about
+        
         regularMode()
-        view.addSubview(nameLable)
+        backView.addSubview(nameLable)
         backView.addSubview(aboutText)
         view.addSubview(editButton)
+        view.addSubview(saveButton)
         view.addSubview(backView)
-        avatarStack.addSubview(avatarImg)
-        view.addSubview(avatarStack)
+        view.addSubview(avatarImg)
         view.addSubview(backButton)
         view.backgroundColor = .white
         
-        let margins = view.layoutMarginsGuide
         
         //MARK: sucsessAlert
         sucsessAlert.addAction(UIAlertAction(title: "👌", style: .default,
@@ -151,136 +177,58 @@ class ProfileViewController: UIViewController {
         spinner.backgroundColor = UIColor.black.withAlphaComponent(0.75)
         
         //MARK: avatarStack + avatarImg
-        view.sendSubviewToBack(avatarStack)
-        avatarStack.translatesAutoresizingMaskIntoConstraints = false
-        avatarImg.translatesAutoresizingMaskIntoConstraints = false
-        imageName = fileDataIntoString("img") ?? "userMainColor.png"
-        avatarImg.image = UIImage.init(named: imageName)
+        view.sendSubviewToBack(avatarImg)
         NSLayoutConstraint.activate([
-            avatarStack.leadingAnchor.constraint(equalTo: margins.leadingAnchor, constant: 100),
-            avatarStack.trailingAnchor.constraint(equalTo: margins.trailingAnchor, constant: -100),
-            avatarStack.topAnchor.constraint(equalTo: margins.topAnchor, constant: 40),
-            avatarStack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            avatarStack.heightAnchor.constraint(equalTo: avatarStack.widthAnchor),
-            
-            avatarImg.leadingAnchor.constraint(equalTo: avatarStack.leadingAnchor),
-            avatarImg.trailingAnchor.constraint(equalTo: avatarStack.trailingAnchor),
-            avatarImg.topAnchor.constraint(equalTo: avatarStack.topAnchor),
-            avatarImg.centerXAnchor.constraint(equalTo: avatarStack.centerXAnchor),
-            avatarImg.heightAnchor.constraint(equalTo: avatarImg.widthAnchor)
+            avatarImg.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            avatarImg.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            avatarImg.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.27),
+            avatarImg.widthAnchor.constraint(equalTo: avatarImg.heightAnchor),
         ])
         
         
-        //MARK: backView
-        backView.translatesAutoresizingMaskIntoConstraints = false
-        backView.backgroundColor = .white
-        backView.layer.cornerRadius = 30
-        backView.layer.shadowColor = UIColor.mainColor.cgColor
-        backView.layer.shadowOpacity = 0.3
-        backView.layer.shadowOffset = .zero
-        backView.layer.shadowRadius = 10
+        //MARK: backView: nameLable + aboutText
         NSLayoutConstraint.activate([
-            backView.topAnchor.constraint(equalTo: avatarStack.bottomAnchor, constant: -10),
-            backView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -400),
+            backView.topAnchor.constraint(equalTo: avatarImg.bottomAnchor, constant: -10),
+            backView.bottomAnchor.constraint(equalTo: aboutText.bottomAnchor, constant: 30),
             backView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            backView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            backView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20)
-        ])
-        
-        //MARK: nameLable
-        view.bringSubviewToFront(nameLable)
-        nameLable.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            nameLable.leadingAnchor.constraint(equalTo: backView.leadingAnchor, constant: 40),
-            nameLable.trailingAnchor.constraint(equalTo: backView.trailingAnchor, constant: -10),
-            nameLable.centerYAnchor.constraint(lessThanOrEqualTo: backView.topAnchor, constant: 50)
-        ])
-        nameLable.text = fileDataIntoString("name") ?? "Иван Иванов"
-        nameLable.font = UIFont.boldSystemFont(ofSize: 30)
-        nameLable.textColor = .mainColor
-        
-        //MARK: aboutText
-        view.bringSubviewToFront(aboutText)
-        aboutText.translatesAutoresizingMaskIntoConstraints = false
-        aboutText.backgroundColor = backView.backgroundColor
-        aboutText.text = fileDataIntoString("about") ?? "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
-        NSLayoutConstraint.activate([
-            aboutText.leftAnchor.constraint(equalTo: backView.leftAnchor, constant: 20),
-            aboutText.rightAnchor.constraint(equalTo: backView.rightAnchor, constant: -10),
+            backView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier:0.9),
+            
+            nameLable.topAnchor.constraint(equalTo: backView.topAnchor, constant: 40),
+            
+            aboutText.centerXAnchor.constraint(equalTo: backView.centerXAnchor),
+            aboutText.widthAnchor.constraint(equalTo: backView.widthAnchor, multiplier: 0.8),
             aboutText.topAnchor.constraint(equalTo: nameLable.bottomAnchor, constant: 20),
-            aboutText.bottomAnchor.constraint(equalTo: backView.bottomAnchor, constant: -30)
+            
+            nameLable.leftAnchor.constraint(equalTo: aboutText.leftAnchor),
+            nameLable.rightAnchor.constraint(equalTo: aboutText.rightAnchor)
         ])
-        
-        aboutText.font = UIFont.systemFont(ofSize: 18)
-        aboutText.isScrollEnabled = true
-        aboutText.isEditable = false
         
         // MARK: editButton
-        designEditButton(editButton)
-        editButton.addTarget(self, action: #selector(editButtonAction(_:)), for: .touchUpInside)
         view.bringSubviewToFront(editButton)
         NSLayoutConstraint.activate([
             editButton.centerYAnchor.constraint(equalTo: backView.bottomAnchor),
-            editButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            editButton.centerXAnchor.constraint(equalTo: backView.centerXAnchor)
         ])
-        editButton.setTitle("EDIT", for: .normal)
         
         //MARK: backButton
-        backButton.addTarget(self, action: #selector(backButtonAction(_:)), for: .touchUpInside)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        backButton.layer.cornerRadius = 15
-        backButton.backgroundColor = .mainColor
-        backButton.layer.opacity = 1
-        backButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        backButton.setImage(UIImage.init(named: "backWhite.png"), for: .normal)
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: avatarStack.topAnchor),
+            backButton.topAnchor.constraint(equalTo: avatarImg.topAnchor),
             backButton.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
             backButton.widthAnchor.constraint(equalToConstant: 30),
             backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
         
-        //MARK: editWarning
-        warningLable.text = "Экран в режиме редактирования"
-        warningObj.backgroundColor = .none
-        warningObj.layer.borderColor = UIColor.red.cgColor
-        warningObj.layer.borderWidth = 1
-        warningLable.font = .systemFont(ofSize: 12)
-        warningLable.textColor = .blueGrey500
-        warningObj.addSubview(warningLable)
-        view.addSubview(warningObj)
-        warningObj.translatesAutoresizingMaskIntoConstraints = false
-        warningLable.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            warningObj.topAnchor.constraint(equalTo: self.view.topAnchor),
-            warningObj.leftAnchor.constraint(equalTo: self.view.leftAnchor),
-            warningObj.rightAnchor.constraint(equalTo: self.view.rightAnchor),
-            warningObj.heightAnchor.constraint(equalToConstant: 40),
-            warningLable.centerYAnchor.constraint(equalTo: warningObj.centerYAnchor),
-            warningLable.leftAnchor.constraint(equalTo: warningObj.leftAnchor, constant: 20 )
-        ])
-        
-        //MARK: saveButton
-        designEditButton(gcdButton)
-        designEditButton(operationButton)
-        view.addSubview(gcdButton)
-        view.addSubview(operationButton)
-        gcdButton.setTitle("GCD", for: .normal)
-        operationButton.setTitle("OPERATION", for: .normal)
-        gcdButton.translatesAutoresizingMaskIntoConstraints = false
-        operationButton.translatesAutoresizingMaskIntoConstraints = false
-        gcdButton.addTarget(self, action: #selector(gcdButtonAction(_:)), for: .touchUpInside)
-        operationButton.addTarget(self, action: #selector(operationButtonAction(_:)), for: .touchUpInside)
-        
         //MARK: editAvatar
         view.addSubview(editAvatarField)
-        editAvatarField.text = imageName
-        editNameField.font = UIFont.boldSystemFont(ofSize: 18)
-        editNameField.textColor = .mainColor
+        //editAvatarField.text = imageName
+        editAvatarField.font = UIFont.boldSystemFont(ofSize: 18)
+        editAvatarField.textColor = .mainColor
+        editAvatarField.backgroundColor = .mainLightColor
         editAvatarField.translatesAutoresizingMaskIntoConstraints = false
         
         //MARK: editNameField
         view.addSubview(editNameField)
+        editNameField.backgroundColor = .mainLightColor
         editNameField.text = nameLable.text
         editNameField.font = UIFont.boldSystemFont(ofSize: 18)
         editNameField.textColor = .mainColor
@@ -288,6 +236,7 @@ class ProfileViewController: UIViewController {
         
         //MARK: editAboutField
         view.addSubview(editAboutField)
+        editAboutField.backgroundColor = .mainLightColor
         editAboutField.text = aboutText.text
         editAboutField.font = UIFont.systemFont(ofSize: 18)
         editAboutField.translatesAutoresizingMaskIntoConstraints = false
@@ -309,13 +258,11 @@ class ProfileViewController: UIViewController {
     }
     
     func regularMode(){
-        warningObj.isHidden = true
-        warningLable.isHidden = true
+        
         editNameField.isHidden = true
         editAboutField.isHidden = true
         editAvatarField.isHidden = true
-        gcdButton.isHidden = true
-        operationButton.isHidden = true
+        saveButton.isHidden = true
         editButton.isHidden = false
         backButton.isHidden = false
         avatarImg.isHidden = false
@@ -323,45 +270,35 @@ class ProfileViewController: UIViewController {
         aboutText.isHidden = false
         editButton.isHidden = false
         backView.isHidden = false
-        avatarStack.isHidden = false
+        avatarImg.isHidden = false
         editNameField.endEditing(true)
         editAboutField.endEditing(true)
         editAvatarField.endEditing(true)
     }
     
     func editMode(){
+        saveButton.isHidden = false
         editButton.isHidden = true
         avatarImg.isHidden = true
         nameLable.isHidden = true
         aboutText.isHidden = true
         editButton.isHidden = true
         backView.isHidden = true
-        avatarStack.isHidden = true
-        warningObj.isHidden = false
-        warningLable.isHidden = false
+        avatarImg.isHidden = true
         editNameField.isHidden = false
         editAboutField.isHidden = false
         editAvatarField.isHidden = false
-        gcdButton.isHidden = false
-        operationButton.isHidden = false
+        
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: warningObj.bottomAnchor, constant: 10),
+            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             backButton.leftAnchor.constraint(equalTo: editNameField.leftAnchor),
             backButton.widthAnchor.constraint(equalToConstant: 30),
             backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
         NSLayoutConstraint.activate([
-            gcdButton.bottomAnchor.constraint(equalTo: backButton.bottomAnchor),
-            gcdButton.leftAnchor.constraint(equalTo: backButton.rightAnchor, constant: 20),
-            gcdButton.heightAnchor.constraint(equalToConstant: 30),
-            operationButton.bottomAnchor.constraint(equalTo: backButton.bottomAnchor),
-            operationButton.leftAnchor.constraint(equalTo: gcdButton.rightAnchor, constant: 20),
-            operationButton.heightAnchor.constraint(equalToConstant: 30),
+            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            saveButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-        gcdButton.layer.cornerRadius = 15
-        operationButton.layer.cornerRadius = 15
-        gcdButton.isEnabled = false
-        operationButton.isEnabled = false
     }
     
     //MARK: Actions
@@ -388,10 +325,6 @@ class ProfileViewController: UIViewController {
         let editAction = UIAlertAction(title: "Редактировать описание", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
             
             self.editMode()
-            self.changed.clean()
-            self.editNameField.addTarget(self, action: #selector(self.nameFieldDidChange), for: UIControl.Event.editingChanged)
-            self.editAboutField.addTarget(self, action: #selector(self.aboutFieldDidChange(_:)), for: UIControl.Event.editingChanged)
-            self.editAvatarField.addTarget(self, action: #selector(self.imgFieldDidChange(_:)), for: UIControl.Event.editingChanged)
         })
         
         let closeAction = UIAlertAction(title: "Закрыть", style: UIAlertAction.Style.cancel){ (Action) -> Void in }
@@ -410,106 +343,36 @@ class ProfileViewController: UIViewController {
         present(actionSheet, animated: true, completion: nil)
     }
     
-    @objc func nameFieldDidChange(_ textField: UITextField){
-        self.gcdButton.isEnabled = true
-        self.operationButton.isEnabled = true
-        self.changed.name = true
-    }
-    @objc func aboutFieldDidChange(_ textField: UITextField){
-        self.gcdButton.isEnabled = true
-        self.operationButton.isEnabled = true
-        self.changed.about = true
-    }
-    @objc func imgFieldDidChange(_ textField: UITextField){
-        self.gcdButton.isEnabled = true
-        self.operationButton.isEnabled = true
-        self.changed.img = true
-    }
-    
-    @objc func gcdButtonAction(_ sender: UIButton!) {
-        gcdAction()
-    }
-    
-    func gcdAction(){
-        gcdButton.isEnabled = false
-        operationButton.isEnabled = false
-        
-        view.bringSubviewToFront(spinner)
-        spinner.startAnimating()
-        spinner.isHidden = false
-        let userInfo = UserInfo.init(name: editNameField.text ?? "",
-                                     about: editAboutField.text ?? "",
-                                     image: editAvatarField.text ?? "",
-                                     changed: changed)
-        
-        let gcd = GCDDataManager()
-        gcd.save(info: userInfo) {isSucces in
-            guard isSucces else{
-                self.failAlert.addAction(UIAlertAction(title: "Повторить", style: .default,
-                                                       handler: {action in self.gcdAction()
-                }))
-                self.present(self.failAlert, animated: true)
-                return
-            }
-            gcd.uploadUserInfo { userInfo in
-                DispatchQueue.main.async {
-                    self.spinner.isHidden = true
-                    self.nameLable.text = userInfo.name
-                    self.aboutText.text = userInfo.about
-                    self.avatarImg.image = UIImage.init(named: userInfo.image)
-                    self.present(self.sucsessAlert, animated: true)
-                }
-            }
-        }
-    }
-    
-    @objc func operationButtonAction(_ sender: UIButton!) {
-        operationAction()
-    }
-    
-    func operationAction(){
-        gcdButton.isEnabled = false
-        operationButton.isEnabled = false
-        view.bringSubviewToFront(spinner)
-        spinner.startAnimating()
-        spinner.isHidden = false
-        let userInfo = UserInfo.init(name: editNameField.text ?? "basicName",
-                                     about: editAboutField.text ?? "basicAbout",
-                                     image: editAvatarField.text ?? "userMainColor_old.png",
-                                     changed: changed)
-        do{
-            let operationQueue = OperationQueue()
-            let nameOp = OperationDataManager.init(input: userInfo.name,
-                                                   fileName: "name",
-                                                   changed: userInfo.changed?.name ?? true)
-            let aboutOp = OperationDataManager.init(input: userInfo.about,
-                                                    fileName: "about",
-                                                    changed: userInfo.changed?.about ?? true)
-            let imgOp = OperationDataManager.init(input: userInfo.image,
-                                                  fileName: "img",
-                                                  changed: userInfo.changed?.img ?? true)
-            operationQueue.addOperation (nameOp)
-            operationQueue.addOperation (aboutOp)
-            operationQueue.addOperation (imgOp)
+     @objc func saveButtonAction(_ sender: UIButton!) {
+        if (saveUser()) {
+            nameLable.text = user?.name
+            aboutText.text = "about"
             
-            operationQueue.waitUntilAllOperationsAreFinished()
-            
-            let mainOpQueue = OperationQueue.main
-            mainOpQueue.addOperation{
-                self.nameLable.text = nameOp.output
-                self.aboutText.text = aboutOp.output
-                self.avatarImg.image = UIImage.init(named: imgOp.output ?? "userMainColor.png")
-                self.spinner.isHidden = true
-                self.present(self.sucsessAlert, animated: true)
-            }
-        }catch {
-            self.failAlert.addAction(UIAlertAction(title: "Повторить", style: .default,
-                                                   handler: {action in self.operationAction()
+            self.present(self.sucsessAlert, animated: true)
+        } else {
+            self.failAlert.addAction(UIAlertAction(title: "Ок", style: .default,
+                                                   handler: {action in self.dismiss(animated: true, completion: nil)
+
             }))
             self.present(self.failAlert, animated: true)
+            return
         }
     }
     
+    func saveUser() -> Bool {
+        if editNameField.text!.isEmpty {
+            let alert = UIAlertController(title: "Validation error", message: "Input the name of the User!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return false
+        }
+    
+        user?.name = editNameField.text
+        user?.about = editAboutField.text
+        CoreDataManager.instance.saveContext()
+        
+        return true
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -555,43 +418,3 @@ class ProfileViewController: UIViewController {
     
     
 }
-
-func designEditButton (_ button: UIButton) {
-    button.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-        button.heightAnchor.constraint(equalToConstant: 50),
-        button.widthAnchor.constraint(greaterThanOrEqualToConstant: 100)
-    ])
-    button.backgroundColor = .mainColor
-    button.layer.cornerRadius = 25
-    button.layer.borderColor = UIColor.black.cgColor
-    button.titleEdgeInsets = UIEdgeInsets(top: 10,left: 10,bottom: 10,right: 10)
-    button.setTitleColor(.white, for: .normal)
-    button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-    button.setTitleColor(.mainColor, for: .selected)
-    button.titleLabel?.adjustsFontSizeToFitWidth = true;
-    button.setBackgroundColor(color: .mainLightColor, forState: .disabled)
-}
-
-func stringToFileData(_ text: String, fileName: String){
-    
-    let path = "\(DIR)\(fileName).txt"
-    
-    do {
-        try text.write(toFile: path, atomically: false, encoding: String.Encoding.utf8)
-    }
-    catch {print("Writing error")}
-    
-}
-
-func fileDataIntoString(_ fileName: String) -> String?{
-    let path = "\(DIR)\(fileName).txt"
-    
-    do {
-        return try String(contentsOfFile: path, encoding: String.Encoding.utf8)
-    }
-    catch {print("Reading error")}
-    
-    return nil
-}
-

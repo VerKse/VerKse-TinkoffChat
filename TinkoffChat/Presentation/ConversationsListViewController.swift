@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+@available(iOS 13.0, *)
 class ConversationsListViewController: UIViewController{
     
     private var onlineData: [ConversationCellModel] = []
@@ -17,39 +18,92 @@ class ConversationsListViewController: UIViewController{
     
     private lazy var firebaseService = GeneralFirebaseService(collection: "channel")
     
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-    private lazy var profileButton = UIButton()
-    private lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
+    /*private var tableView : UITableView {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 44
+        return tableView
+    }*/
+    
+    let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    
+    let insets = CGFloat(5)
+    private lazy var profileButton: UIButton = {
+        var profileButton = UIButton()
+        profileButton.addTarget(self, action: #selector(profileButtonAction(_:)), for: .touchUpInside)
+        profileButton.setImage(UIImage.init(named: "userWhite.png"), for: .normal)
+        profileButton.layer.cornerRadius = 30
+        profileButton.imageEdgeInsets = UIEdgeInsets(top: insets, left: insets, bottom: insets, right: insets)
+        profileButton.translatesAutoresizingMaskIntoConstraints = false
+        return profileButton
+    }()
+    
+    private lazy var addChannelButton: UIButton={
+        var addChannelButton = UIButton()
+        addChannelButton.addTarget(self, action: #selector(addChannelButtonAction(_:)), for: .touchUpInside)
+        addChannelButton.setImage(UIImage.init(named: "penWhite.png"), for: .normal)
+        addChannelButton.layer.cornerRadius = 30
+        addChannelButton.imageEdgeInsets = UIEdgeInsets(top: insets, left: insets, bottom: insets, right: insets)
+        addChannelButton.translatesAutoresizingMaskIntoConstraints = false
+        return addChannelButton
+    }()
+    
+    private lazy var profileLabel: UILabel={
+        var label = UILabel()
+        label.text = "Profile"
+        label.textColor = .white
+        label.font = .boldSystemFont(ofSize: 10)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var channelLabel: UILabel={
+        var label = UILabel()
+        label.text = "Add Channel"
+        label.textColor = .white
+        label.font = .boldSystemFont(ofSize: 10)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var bottomView: UIView = {
+        var bottomStack = UIView()
+        bottomStack.backgroundColor = .mainColor
+        bottomStack.translatesAutoresizingMaskIntoConstraints = false
+        //bottomStack.axis  = .horizontal
+        //bottomStack.distribution  = .equalCentering
+        //bottomStack.alignment = .center
+        return bottomStack
+    }()
+    
+    private var spinner : UIActivityIndicatorView{
+        let spinner = UIActivityIndicatorView(style: .whiteLarge)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }
+    
     private lazy var testChannel = ""
     private lazy var channelList = [Channel]()
     var data = [ConversationCellModel]()
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let margins = view.layoutMarginsGuide
-        let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.mainColor]
-        navigationController?.navigationBar.titleTextAttributes = textAttributes
-        navigationItem.title = "Tinkoff Chat"
-        view.backgroundColor = .white
-        navigationController?.navigationBar.prefersLargeTitles = false
-        
-        //firebaseService.setData(tableView: tableView, onlineData: onlineData, historyData:historyData)
-        
-        spinner.isHidden = true
-                
-        
         //MARK: spinner
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(spinner)
-        view.bringSubviewToFront(spinner)
+        /*spinner.isHidden = true
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        spinner.isHidden = false
+        view.addSubview(spinner)
+        view.bringSubviewToFront(spinner)
+        spinner.isHidden = false*/
         
         
-        FirebaseApp.configure()
+        //FirebaseApp.configure()
         reference.addSnapshotListener { [weak self] snapshot, error in
             self?.data.removeAll()
             self?.onlineData.removeAll()
@@ -74,62 +128,61 @@ class ConversationsListViewController: UIViewController{
             self!.spinner.isHidden = true
             self!.tableView.reloadData()
         }
-    
+        
+
+        //MARK: bottomStack
+        bottomView.addSubview(profileButton)
+        bottomView.addSubview(addChannelButton)
+        bottomView.addSubview(profileLabel)
+        bottomView.addSubview(channelLabel)
+               
+        view.addSubview(bottomView)
+        NSLayoutConstraint.activate([
+            bottomView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            bottomView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            bottomView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.1),
+            bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         
         //MARK: profileButton
-        profileButton.addTarget(self, action: #selector(profileButtonAction(_:)), for: .touchUpInside)
-        view.addSubview(profileButton)
-        profileButton.setImage(UIImage.init(named: "userMainColor.png"), for: .normal)
-        profileButton.backgroundColor = .white
-        profileButton.layer.cornerRadius = 30
-        profileButton.layer.shadowColor = UIColor.mainColor.cgColor
-        profileButton.layer.shadowOpacity = 0.3
-        profileButton.layer.shadowOffset = .zero
-        profileButton.layer.shadowRadius = 10
-        let insets = CGFloat(10)
-        profileButton.imageEdgeInsets = UIEdgeInsets(top: insets, left: insets, bottom: insets, right: insets)
-        profileButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            profileButton.centerXAnchor.constraint(equalTo: margins.centerXAnchor),
-            profileButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10),
-            profileButton.widthAnchor.constraint(equalToConstant: 60),
+            profileButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor, constant: -5),
+            profileButton.rightAnchor.constraint(equalTo: bottomView.centerXAnchor, constant: -40),
+            profileButton.widthAnchor.constraint(equalTo: bottomView.heightAnchor, multiplier: 0.6),
             profileButton.heightAnchor.constraint(equalTo: profileButton.widthAnchor)
         ])
         
         //MARK: addChannelButton
-        let addChannelButton = UIButton()
-        addChannelButton.addTarget(self, action: #selector(addChannelButtonAction(_:)), for: .touchUpInside)
-        view.addSubview(addChannelButton)
-        addChannelButton.setImage(UIImage.init(named: "penMainColor.png"), for: .normal)
-        addChannelButton.backgroundColor = .white
-        addChannelButton.layer.cornerRadius = 30
-        addChannelButton.layer.shadowColor = UIColor.mainColor.cgColor
-        addChannelButton.layer.shadowOpacity = 0.3
-        addChannelButton.layer.shadowOffset = .zero
-        addChannelButton.layer.shadowRadius = 10
-        addChannelButton.imageEdgeInsets = UIEdgeInsets(top: insets, left: insets, bottom: insets, right: insets)
-        addChannelButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            addChannelButton.rightAnchor.constraint(equalTo: margins.rightAnchor, constant: -50),
-            addChannelButton.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: -10),
+            addChannelButton.centerYAnchor.constraint(equalTo: bottomView.centerYAnchor, constant: -5),
+            addChannelButton.leftAnchor.constraint(equalTo: bottomView.centerXAnchor, constant: 40),
             addChannelButton.widthAnchor.constraint(equalTo: profileButton.widthAnchor),
             addChannelButton.heightAnchor.constraint(equalTo: addChannelButton.widthAnchor)
         ])
         
-        //MARK: tableView
-        tableView.register(ConversationCell.self, forCellReuseIdentifier: String(describing: ConversationCell.self))
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: profileButton.topAnchor, constant: -20)
+            profileLabel.centerXAnchor.constraint(equalTo: profileButton.centerXAnchor),
+            profileLabel.topAnchor.constraint(equalTo: profileButton.bottomAnchor),
+            
+            channelLabel.centerXAnchor.constraint(equalTo:addChannelButton.centerXAnchor),
+            channelLabel.topAnchor.constraint(equalTo: addChannelButton.bottomAnchor),
         ])
+        
+        //MARK: tableView
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
+        view.addSubview(tableView)
+        tableView.register(ConversationCell.self, forCellReuseIdentifier: String(describing: ConversationCell.self))
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+            tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomView.topAnchor)
+        ])
+        
     }
     
     //MARK: Actions
@@ -153,18 +206,40 @@ class ConversationsListViewController: UIViewController{
             }
             onlineData = onlineData.sorted { (ccm1, ccm2) -> Bool in
                 if (ccm1.channel.lastActivity! < ccm2.channel.lastActivity!){
-                return false
+                    return false
                 } else {return true}
             }
             historyData = historyData.sorted { (ccm1, ccm2) -> Bool in
                 if (ccm1.channel.name! > ccm2.channel.name!){
-                return false
+                    return false
                 } else {return true}
             }
         }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.mainColor]
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.titleTextAttributes = textAttributes
+        navigationController?.navigationBar.largeTitleTextAttributes = textAttributes
+        navigationItem.title = "Tinkoff Chat"
+        navigationItem.largeTitleDisplayMode = .automatic;
+        //navigationItem.searchController = UISearchController(searchResultsController: nil)
+        //navigationItem.hidesSearchBarWhenScrolling = true
+        navigationController?.navigationBar.sizeToFit()
+        
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        //navigationController?.navigationBar.prefersLargeTitles = false
+    }
 }
 
+@available(iOS 13.0, *)
 extension ConversationsListViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
@@ -219,8 +294,8 @@ extension ConversationsListViewController : UITableViewDataSource {
             formatter.dateFormat = "HH:mm"
         } else {
             formatter.dateFormat = "dd MMM"
-        }
-        cell.dateLable.text = formatter.string(from: user.channel.lastActivity!)
+            }
+            cell.dateLable.text = formatter.string(from: user.channel.lastActivity!)
         }
     }
     
@@ -233,17 +308,17 @@ extension ConversationsListViewController : UITableViewDataSource {
         switch indexPath.section {
         case 0:
             let channel = Channel(identifier: onlineData[indexPath.row].channel.identifier,
-                                 name: onlineData[indexPath.row].channel.name,
-                                 lastMessage: nil,
-                                 lastActivity: nil)
+                                  name: onlineData[indexPath.row].channel.name,
+                                  lastMessage: nil,
+                                  lastActivity: nil)
             let conversationViewController = ConversationViewController.init(channel: channel)
             navigationController?.pushViewController(conversationViewController, animated: true)
             break
         case 1:
             let channel = Channel(identifier: historyData[indexPath.row].channel.identifier,
-                             name: historyData[indexPath.row].channel.name,
-                             lastMessage: nil,
-                             lastActivity: nil)
+                                  name: historyData[indexPath.row].channel.name,
+                                  lastMessage: nil,
+                                  lastActivity: nil)
             let conversationViewController = ConversationViewController.init(channel: channel)
             navigationController?.pushViewController(conversationViewController, animated: true)
             break
@@ -254,6 +329,7 @@ extension ConversationsListViewController : UITableViewDataSource {
 }
 
 
+@available(iOS 13.0, *)
 extension ConversationsListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

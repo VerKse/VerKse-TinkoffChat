@@ -17,15 +17,19 @@
 		AA0CA9CA24228FED006E91A8 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA0CA9C924228FEC006E91A8 /* GoogleService-Info.plist */; };
 		AA577BB12401BDC9001CA495 /* placeholder-user.png in Resources */ = {isa = PBXBuildFile; fileRef = AA577BAF2401BDC9001CA495 /* placeholder-user.png */; };
 		AA577BB22401BDC9001CA495 /* slr-camera-2-xxl.png in Resources */ = {isa = PBXBuildFile; fileRef = AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */; };
+		AA6B5821242F6F9C00AEB30B /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6B581F242F6F9C00AEB30B /* User+CoreDataClass.swift */; };
+		AA6B5822242F6F9C00AEB30B /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6B5820242F6F9C00AEB30B /* User+CoreDataProperties.swift */; };
+		AA6B5824242F70CF00AEB30B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6B5823242F70CF00AEB30B /* CoreDataManager.swift */; };
 		AA8BBF1723F9417200D754AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF1623F9417200D754AE /* AppDelegate.swift */; };
 		AA8BBF1B23F9417200D754AE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF1A23F9417200D754AE /* ViewController.swift */; };
 		AA8BBF1E23F9417200D754AE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF1C23F9417200D754AE /* Main.storyboard */; };
-		AA8BBF2123F9417200D754AE /* TinkoffChat.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF1F23F9417200D754AE /* TinkoffChat.xcdatamodeld */; };
 		AA8BBF2323F9417700D754AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF2223F9417700D754AE /* Assets.xcassets */; };
 		AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF2423F9417700D754AE /* LaunchScreen.storyboard */; };
 		AA8BBF3123F9417700D754AE /* TinkoffChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8BBF3023F9417700D754AE /* TinkoffChatTests.swift */; };
+		AA980556242F8626004C1253 /* TinkoffChat.xcdatamodeld in Resources */ = {isa = PBXBuildFile; fileRef = AA8BBF1F23F9417200D754AE /* TinkoffChat.xcdatamodeld */; };
 		AA997E802415299F00BCF999 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA997E7F2415299F00BCF999 /* ConversationCell.swift */; };
 		AAB6564B2427656000349583 /* FirebaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB6564A2427656000349583 /* FirebaseProtocol.swift */; };
+		AACA7A16242E71EB0003B750 /* penWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = AACA7A15242E71EB0003B750 /* penWhite.png */; };
 		AADA7D84241C08B700616239 /* userMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AADA7D83241C08B700616239 /* userMainColor.png */; };
 		AADE9E88240A614100557835 /* purpleArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E87240A614100557835 /* purpleArrow.png */; };
 		AADE9E91240A696500557835 /* userMainColor_old.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E90240A696500557835 /* userMainColor_old.png */; };
@@ -62,6 +66,9 @@
 		AA17128224139AF000753C4F /* CompanyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = CompanyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		AA577BAF2401BDC9001CA495 /* placeholder-user.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "placeholder-user.png"; sourceTree = "<group>"; };
 		AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slr-camera-2-xxl.png"; sourceTree = "<group>"; };
+		AA6B581F242F6F9C00AEB30B /* User+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
+		AA6B5820242F6F9C00AEB30B /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		AA6B5823242F70CF00AEB30B /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CoreDataManager.swift; path = TinkoffChat/CoreDataManager.swift; sourceTree = SOURCE_ROOT; };
 		AA8BBF1323F9417200D754AE /* TinkoffChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TinkoffChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA8BBF1623F9417200D754AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AA8BBF1A23F9417200D754AE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -75,6 +82,7 @@
 		AA8BBF3223F9417700D754AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA997E7F2415299F00BCF999 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
 		AAB6564A2427656000349583 /* FirebaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseProtocol.swift; sourceTree = "<group>"; };
+		AACA7A15242E71EB0003B750 /* penWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penWhite.png; sourceTree = "<group>"; };
 		AADA7D83241C08B700616239 /* userMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userMainColor.png; sourceTree = "<group>"; };
 		AADE9E87240A614100557835 /* purpleArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = purpleArrow.png; sourceTree = "<group>"; };
 		AADE9E89240A615300557835 /* Play-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Play-Bold.ttf"; sourceTree = "<group>"; };
@@ -139,27 +147,55 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		AA6B5810242F6E5700AEB30B /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				AA6B5823242F70CF00AEB30B /* CoreDataManager.swift */,
+				AA6B581F242F6F9C00AEB30B /* User+CoreDataClass.swift */,
+				AA6B5820242F6F9C00AEB30B /* User+CoreDataProperties.swift */,
+				AA8BBF1F23F9417200D754AE /* TinkoffChat.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		AA6B5829242F82F100AEB30B /* picture */ = {
+			isa = PBXGroup;
+			children = (
+				AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */,
+				AA577BAF2401BDC9001CA495 /* placeholder-user.png */,
+				AADE9E87240A614100557835 /* purpleArrow.png */,
+				AADE9E96240A715F00557835 /* backWhite.png */,
+				AADE9E92240A699300557835 /* userWhite.png */,
+				AADA7D83241C08B700616239 /* userMainColor.png */,
+				AAE7133024264C4600A2C6FF /* tickMainColor.png */,
+				AAE7132C2426495500A2C6FF /* penMainColor.png */,
+				AACA7A15242E71EB0003B750 /* penWhite.png */,
+				AADE9E90240A696500557835 /* userMainColor_old.png */,
+			);
+			path = picture;
+			sourceTree = "<group>";
+		};
+		AA6B582A242F82FE00AEB30B /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				AADE9E89240A615300557835 /* Play-Bold.ttf */,
+				AADE9E8A240A615300557835 /* Play-Regular.ttf */,
+				AADE9E8B240A616D00557835 /* RobotoSlab-ExtraLight.ttf */,
+				AADE9E8C240A616D00557835 /* RobotoSlab-Light.ttf */,
+				AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		AA8BBF0A23F9417200D754AE = {
 			isa = PBXGroup;
 			children = (
 				AA8BBF1523F9417200D754AE /* TinkoffChat */,
 				AA8BBF2F23F9417700D754AE /* TinkoffChatTests */,
 				AA8BBF1423F9417200D754AE /* Products */,
-				AA577BB02401BDC9001CA495 /* slr-camera-2-xxl.png */,
-				AA577BAF2401BDC9001CA495 /* placeholder-user.png */,
-				AADE9E87240A614100557835 /* purpleArrow.png */,
-				AADE9E89240A615300557835 /* Play-Bold.ttf */,
-				AADE9E8A240A615300557835 /* Play-Regular.ttf */,
-				AADE9E8B240A616D00557835 /* RobotoSlab-ExtraLight.ttf */,
-				AADE9E8C240A616D00557835 /* RobotoSlab-Light.ttf */,
-				AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */,
-				AADE9E96240A715F00557835 /* backWhite.png */,
-				AADE9E92240A699300557835 /* userWhite.png */,
-				AADA7D83241C08B700616239 /* userMainColor.png */,
-				AAE7133024264C4600A2C6FF /* tickMainColor.png */,
-				AAE7132C2426495500A2C6FF /* penMainColor.png */,
-				AADE9E90240A696500557835 /* userMainColor_old.png */,
 				35CF43266A016618E6162454 /* Pods */,
+				AA6B582A242F82FE00AEB30B /* fonts */,
+				AA6B5829242F82F100AEB30B /* picture */,
 				117E568E9E332531ED7950FA /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -179,6 +215,7 @@
 				AA8BBF2723F9417700D754AE /* Info.plist */,
 				AA8BBF1623F9417200D754AE /* AppDelegate.swift */,
 				AACF4F532423E025008388E4 /* Presentation */,
+				AA6B5810242F6E5700AEB30B /* CoreData */,
 				AACF4F542423E030008388E4 /* Services */,
 				AA17128224139AF000753C4F /* CompanyPlayground.playground */,
 			);
@@ -214,7 +251,6 @@
 			isa = PBXGroup;
 			children = (
 				AA0CA9C924228FEC006E91A8 /* GoogleService-Info.plist */,
-				AA8BBF1F23F9417200D754AE /* TinkoffChat.xcdatamodeld */,
 				AA8BBF2223F9417700D754AE /* Assets.xcassets */,
 				AAF1B9312427EA7800658E60 /* MessagesProtocol.swift */,
 				AAB6564A2427656000349583 /* FirebaseProtocol.swift */,
@@ -308,6 +344,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA980556242F8626004C1253 /* TinkoffChat.xcdatamodeld in Resources */,
 				AADE9E93240A699300557835 /* userWhite.png in Resources */,
 				AAE7132D2426495500A2C6FF /* penMainColor.png in Resources */,
 				AAE7133124264C4600A2C6FF /* tickMainColor.png in Resources */,
@@ -318,6 +355,7 @@
 				AADA7D84241C08B700616239 /* userMainColor.png in Resources */,
 				AA8BBF2623F9417700D754AE /* LaunchScreen.storyboard in Resources */,
 				AA0636C12413F47B0090E2EA /* RobotoSlab-Thin.ttf in Resources */,
+				AACA7A16242E71EB0003B750 /* penWhite.png in Resources */,
 				AA8BBF2323F9417700D754AE /* Assets.xcassets in Resources */,
 				AA0CA9CA24228FED006E91A8 /* GoogleService-Info.plist in Resources */,
 				AADE9E91240A696500557835 /* userMainColor_old.png in Resources */,
@@ -413,12 +451,14 @@
 				AADE9EAD240C188500557835 /* ConversationViewController.swift in Sources */,
 				AAB6564B2427656000349583 /* FirebaseProtocol.swift in Sources */,
 				AA8BBF1B23F9417200D754AE /* ViewController.swift in Sources */,
+				AA6B5821242F6F9C00AEB30B /* User+CoreDataClass.swift in Sources */,
 				AAE7132F242649A700A2C6FF /* ChannelAddViewController.swift in Sources */,
-				AA8BBF2123F9417200D754AE /* TinkoffChat.xcdatamodeld in Sources */,
+				AA6B5822242F6F9C00AEB30B /* User+CoreDataProperties.swift in Sources */,
 				AA0636C524140B8B0090E2EA /* MessageCell.swift in Sources */,
 				AA8BBF1723F9417200D754AE /* AppDelegate.swift in Sources */,
 				AADE9EAF240C18AF00557835 /* ProfileViewController.swift in Sources */,
 				AADE9EAB240C182300557835 /* ConversationsListViewController.swift in Sources */,
+				AA6B5824242F70CF00AEB30B /* CoreDataManager.swift in Sources */,
 				AAF1B9322427EA7800658E60 /* MessagesProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
