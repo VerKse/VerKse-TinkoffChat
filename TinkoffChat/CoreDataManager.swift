@@ -13,22 +13,35 @@ class CoreDataManager{
     
     //Singleton
     static let instance = CoreDataManager()
-    
-    private init(){}
+    static let managedObject = User()
+
+    func activateCoreData(){
+        if (CoreDataManager.managedObject.name == nil){
+            basicEntity()
+        }
+    }
     
     // Entity for Name
     func entityForName(entityName: String) -> NSEntityDescription {
         return NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)!
     }
     
+    func fetchRequest(entityName: String, keyForSort: String) -> NSFetchRequest<NSFetchRequestResult>{
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+        let sortDescriptor = NSSortDescriptor(key: keyForSort, ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        return fetchRequest
+    }
+    
+    // var fetchedResultsController = instance.fetchedResultsController(entityName: "User", keyForSort: "name")
     // Fetched Results Controller for Entity Name
-    func fetchedResultsController(entityName: String, keyForSort: String) -> NSFetchedResultsController<NSFetchRequestResult> {
+    /*func fetchedResultsController(entityName: String, keyForSort: String) -> NSFetchedResultsController<NSFetchRequestResult> {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
         let sortDescriptor = NSSortDescriptor(key: keyForSort, ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.instance.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
         return fetchedResultsController
-    }
+    }*/
     
     // MARK: - Core Data stack
     lazy var applicationDocumentsDirectory: NSURL = {
@@ -73,7 +86,7 @@ class CoreDataManager{
     //MARK: Core Data saving support
     
     lazy var persistentContainer: NSPersistentContainer = {
-
+        
         let container = NSPersistentContainer(name: "TinkoffChat")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -102,15 +115,25 @@ class CoreDataManager{
 
 extension CoreDataManager: StorageProtocol{
     
-    
-    //let alert = UIAlertController(title: "Validation error", message: "Input the name of the User!", preferredStyle: .alert)
-    
-    func load(completion: @escaping (UserInfo?) -> Void) {
-        //
+    func basicEntity() {
+        CoreDataManager.managedObject.name = "Иван Иванов"
+        CoreDataManager.managedObject.about = "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
+        CoreDataManager.managedObject.avatar = "userMainColor.png"
+        CoreDataManager.instance.saveContext()
     }
     
-    func save(profile: UserInfo, completion: @escaping (Bool) -> Void) {
-        //
+    func load(completion: @escaping (User?) -> Void) {
+        let fetchRequest = CoreDataManager.instance.fetchRequest(entityName: "User", keyForSort: "name")
+        let userList = try? CoreDataManager.instance.managedObjectContext.fetch(fetchRequest)
+        completion(userList?.first as? User)
+    }
+    
+    func save(profile: User, completion: @escaping (Bool) -> Void) {
+        CoreDataManager.managedObject.name = profile.name
+        CoreDataManager.managedObject.about = profile.about
+        CoreDataManager.managedObject.avatar = profile.avatar
         
+        CoreDataManager.instance.saveContext()
+        completion(true)
     }
 }

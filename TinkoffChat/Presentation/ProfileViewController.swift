@@ -12,6 +12,11 @@ import CoreData
 class ProfileViewController: UIViewController {
     //MARK: PersistentContainer
     //let container = StorageManager()
+    
+    //MARK: CoreData
+    //var fetchedResultsController = CoreDataManager.instance.fetchedResultsController(entityName: "User", keyForSort: "name")
+    let coreDataStack = CoreDataManager()
+    
     var user: User?
     
     private lazy var avatarImg: UIImageView = {
@@ -107,6 +112,18 @@ class ProfileViewController: UIViewController {
         return button
     }()
     
+    private lazy var backEditButton: UIButton = {
+        var button = UIButton()
+        button.addTarget(self, action: #selector(backButtonEditAction(_:)), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 15
+        button.backgroundColor = .mainColor
+        button.layer.opacity = 1
+        button.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        button.setImage(UIImage.init(named: "cancelWhite.png"), for: .normal)
+        return button
+    }()
+    
     private lazy var editNameField = UITextField()
     private lazy var editAboutField = UITextField()
     private lazy var editAvatarField = UITextField()
@@ -119,14 +136,26 @@ class ProfileViewController: UIViewController {
     let failAlert = UIAlertController(title: "Изменения не успешно сохранены",
                                       message: "Абсолютно не успешно.",
                                       preferredStyle: .alert)
-    var fetchedResultsController = CoreDataManager.instance.fetchedResultsController(entityName: "User", keyForSort: "name")
+    
+    
     
     //MARK: Properties
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //MARK: CoreData
-        loadCoreData()
+        coreDataStack.activateCoreData()
+        coreDataStack.load { (user) in
+            self.user = user
+        }
+        
+        nameLable.text = user?.name
+        aboutText.text = user?.about
+        avatarImg.image = UIImage.init(named: user?.avatar ?? "userMainColor.png")
+        
+        editNameField.text = user?.name
+        editAboutField.text = user?.about
+        editAvatarField.text = user?.avatar
         
         regularMode()
         backView.addSubview(nameLable)
@@ -195,10 +224,19 @@ class ProfileViewController: UIViewController {
         
         //MARK: backButton
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: avatarImg.topAnchor),
-            backButton.leadingAnchor.constraint(equalTo: backView.leadingAnchor),
+            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
+            backButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
             backButton.widthAnchor.constraint(equalToConstant: 30),
             backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
+        ])
+        
+        //MARK: backEditButton
+        view.addSubview(backEditButton)
+        NSLayoutConstraint.activate([
+            backEditButton.topAnchor.constraint(equalTo: backButton.topAnchor),
+            backEditButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            backEditButton.widthAnchor.constraint(equalToConstant: 30),
+            backEditButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
         
         //MARK: editAvatarField
@@ -247,7 +285,6 @@ class ProfileViewController: UIViewController {
         editAvatarField.isHidden = true
         saveButton.isHidden = true
         editButton.isHidden = false
-        backButton.isHidden = false
         avatarImg.isHidden = false
         nameLable.isHidden = false
         aboutText.isHidden = false
@@ -257,6 +294,7 @@ class ProfileViewController: UIViewController {
         editNameField.endEditing(true)
         editAboutField.endEditing(true)
         editAvatarField.endEditing(true)
+        backEditButton.isHidden = true
     }
     
     func editMode(){
@@ -274,6 +312,7 @@ class ProfileViewController: UIViewController {
         editNameField.endEditing(false)
         editAboutField.endEditing(false)
         editAvatarField.endEditing(false)
+        backEditButton.isHidden = false
 
         
         NSLayoutConstraint.activate([
@@ -291,6 +330,10 @@ class ProfileViewController: UIViewController {
     //MARK: Actions
     @objc func backButtonAction(_ sender : UIButton) {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func backButtonEditAction(_ sender : UIButton) {
+        regularMode()
     }
     
     @objc func editButtonAction(_ sender: UIButton!) {
@@ -331,38 +374,6 @@ class ProfileViewController: UIViewController {
     }
     
     @objc func saveButtonAction(_ sender: UIButton!) {
-        saveCoreData()
-    }
-    func loadCoreData(){
-        let managedObject = User()
-        
-        if (managedObject.name == nil){
-            managedObject.name = "Иван Иванов"
-            managedObject.about = "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
-            managedObject.avatar = "userMainColor.png"
-            
-        }
-        CoreDataManager.instance.saveContext()
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print(error)
-        }
-        
-        let userList = fetchedResultsController.fetchedObjects
-        
-        user = userList?[0] as? User
-        
-        nameLable.text = user?.name
-        aboutText.text = user?.about
-        avatarImg.image = UIImage.init(named: user?.avatar ?? "userMainColor.png")
-        
-        editNameField.text = user?.name
-        editAboutField.text = user?.about
-        editAvatarField.text = user?.avatar
-    }
-    
-    func saveCoreData(){
         if (saveUser()) {
             nameLable.text = user?.name
             aboutText.text = user?.about
@@ -390,8 +401,8 @@ class ProfileViewController: UIViewController {
         self.user?.name = editNameField.text
         self.user?.about = editAboutField.text
         self.user?.avatar = editAvatarField.text
-        CoreDataManager.instance.saveContext()
         
+        coreDataStack.save(profile: self.user!, completion: { _ in })
         return true
     }
     

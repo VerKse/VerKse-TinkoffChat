@@ -11,9 +11,9 @@ import CoreData
 
 protocol StorageProtocol {
     
-    func load(completion: @escaping (UserInfo?) -> Void)
-    func save(profile: UserInfo, completion: @escaping (Bool) -> Void)
-    
+    func load(completion: @escaping (User?) -> Void)
+    func save(profile: User, completion: @escaping (Bool) -> Void)
+    func basicEntity()
 
 }
 
