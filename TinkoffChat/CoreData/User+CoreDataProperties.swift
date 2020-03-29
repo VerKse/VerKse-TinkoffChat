@@ -19,6 +19,6 @@ extension User {
 
     @NSManaged public var name: String?
     @NSManaged public var about: String?
-    @NSManaged public var avatar: URL?
+    @NSManaged public var avatar: String?
 
 }

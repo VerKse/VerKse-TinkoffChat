@@ -99,3 +99,18 @@ class CoreDataManager{
         }
     }
 }
+
+extension CoreDataManager: StorageProtocol{
+    
+    
+    //let alert = UIAlertController(title: "Validation error", message: "Input the name of the User!", preferredStyle: .alert)
+    
+    func load(completion: @escaping (UserInfo?) -> Void) {
+        //
+    }
+    
+    func save(profile: UserInfo, completion: @escaping (Bool) -> Void) {
+        //
+        
+    }
+}

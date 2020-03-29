@@ -7,17 +7,13 @@
 //
 
 import UIKit
-
-struct UserInfo{
-    var name: String
-    var about: String?
-    var image: String?
-}
+import CoreData
 
 class ProfileViewController: UIViewController {
-    
+    //MARK: PersistentContainer
+    //let container = StorageManager()
     var user: User?
-
+    
     private lazy var avatarImg: UIImageView = {
         var image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -127,23 +123,10 @@ class ProfileViewController: UIViewController {
     
     //MARK: Properties
     override func viewDidLoad() {
-        
         super.viewDidLoad()
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            print(error)
-        }
         
-        let userList = fetchedResultsController.fetchedObjects
-        
-        if (userList?.isEmpty ?? true) {
-            user?.name = "Ivan"
-            user?.about = ""
-        } else { user = userList?[0] as? User }
-        
-        nameLable.text = user?.name
-        aboutText.text = user?.about
+        //MARK: CoreData
+        loadCoreData()
         
         regularMode()
         backView.addSubview(nameLable)
@@ -218,9 +201,9 @@ class ProfileViewController: UIViewController {
             backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
         
-        //MARK: editAvatar
+        //MARK: editAvatarField
         view.addSubview(editAvatarField)
-        //editAvatarField.text = imageName
+        editAvatarField.text = "userMainColor.png"
         editAvatarField.font = UIFont.boldSystemFont(ofSize: 18)
         editAvatarField.textColor = .mainColor
         editAvatarField.backgroundColor = .mainLightColor
@@ -288,6 +271,10 @@ class ProfileViewController: UIViewController {
         editNameField.isHidden = false
         editAboutField.isHidden = false
         editAvatarField.isHidden = false
+        editNameField.endEditing(false)
+        editAboutField.endEditing(false)
+        editAvatarField.endEditing(false)
+
         
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
@@ -343,16 +330,49 @@ class ProfileViewController: UIViewController {
         present(actionSheet, animated: true, completion: nil)
     }
     
-     @objc func saveButtonAction(_ sender: UIButton!) {
+    @objc func saveButtonAction(_ sender: UIButton!) {
+        saveCoreData()
+    }
+    func loadCoreData(){
+        let managedObject = User()
+        
+        if (managedObject.name == nil){
+            managedObject.name = "Иван Иванов"
+            managedObject.about = "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
+            managedObject.avatar = "userMainColor.png"
+            
+        }
+        CoreDataManager.instance.saveContext()
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error)
+        }
+        
+        let userList = fetchedResultsController.fetchedObjects
+        
+        user = userList?[0] as? User
+        
+        nameLable.text = user?.name
+        aboutText.text = user?.about
+        avatarImg.image = UIImage.init(named: user?.avatar ?? "userMainColor.png")
+        
+        editNameField.text = user?.name
+        editAboutField.text = user?.about
+        editAvatarField.text = user?.avatar
+    }
+    
+    func saveCoreData(){
         if (saveUser()) {
             nameLable.text = user?.name
-            aboutText.text = "about"
+            aboutText.text = user?.about
+            avatarImg.image = UIImage.init(named: user?.avatar ?? "userMainColor.png")
             
             self.present(self.sucsessAlert, animated: true)
         } else {
             self.failAlert.addAction(UIAlertAction(title: "Ок", style: .default,
                                                    handler: {action in self.dismiss(animated: true, completion: nil)
-
+                                                    
             }))
             self.present(self.failAlert, animated: true)
             return
@@ -366,13 +386,15 @@ class ProfileViewController: UIViewController {
             self.present(alert, animated: true, completion: nil)
             return false
         }
-    
-        user?.name = editNameField.text
-        user?.about = editAboutField.text
+        
+        self.user?.name = editNameField.text
+        self.user?.about = editAboutField.text
+        self.user?.avatar = editAvatarField.text
         CoreDataManager.instance.saveContext()
         
         return true
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
