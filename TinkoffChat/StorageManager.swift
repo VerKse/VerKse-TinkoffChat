@@ -9,14 +9,14 @@
 import Foundation
 import CoreData
 
-class CoreDataManager{
+class StorageManager{
     
     //Singleton
-    static let instance = CoreDataManager()
+    static let instance = StorageManager()
     static let managedObject = User()
     
     func activateCoreData(){
-        if (CoreDataManager.managedObject.name == nil){
+        if (StorageManager.managedObject.name == nil){
             basicEntity()
         }
     }
@@ -108,33 +108,34 @@ class CoreDataManager{
     }
 }
 
-extension CoreDataManager: StorageProtocol{
-    func activate() {
-        if (CoreDataManager.managedObject.name == nil){
+extension StorageManager: StorageProtocol{
+    func activate(completion: @escaping (Bool) -> Void) {
+        if (StorageManager.managedObject.name == nil){
             basicEntity()
         }
+        completion(true)
     }
     
     func basicEntity() {
-        CoreDataManager.managedObject.name = "Иван Иванов"
-        CoreDataManager.managedObject.about = "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
-        CoreDataManager.managedObject.avatar = "userMainColor.png"
-        CoreDataManager.instance.saveContext()
+        StorageManager.managedObject.name = "Иван Иванов"
+        StorageManager.managedObject.about = "\u{1F496} программировать под iOS 😍 убирать варнинги 😍 верстать в storyboard'ах \u{1F496} убирать варнинги \u{1F496} ещё раз убирать варнинги"
+        StorageManager.managedObject.avatar = "userMainColor.png"
+        StorageManager.instance.saveContext()
     }
     
     func load(completion: @escaping (User?) -> Void) {
-        let fetchRequest = CoreDataManager.instance.fetchRequest(entityName: "User", keyForSort: "name")
-        let userList = try? CoreDataManager.instance.managedObjectContext.fetch(fetchRequest)
+        let fetchRequest = StorageManager.instance.fetchRequest(entityName: "User", keyForSort: "name")
+        let userList = try? StorageManager.instance.managedObjectContext.fetch(fetchRequest)
         completion(userList?.first as? User)
     }
     
     func save(profile: User, completion: @escaping (Bool) -> Void) {
         
-        CoreDataManager.managedObject.name = profile.name
-        CoreDataManager.managedObject.about = profile.about
-        CoreDataManager.managedObject.avatar = profile.avatar
+        StorageManager.managedObject.name = profile.name
+        StorageManager.managedObject.about = profile.about
+        StorageManager.managedObject.avatar = profile.avatar
         
-        CoreDataManager.instance.saveContext()
+        StorageManager.instance.saveContext()
         completion(true)
     }
 }

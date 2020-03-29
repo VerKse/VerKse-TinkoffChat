@@ -10,9 +10,7 @@ import UIKit
 import CoreData
 
 class ProfileViewController: UIViewController {
-    //MARK: PersistentContainer -- StorageManager()
-    //MARK: CoreData -- CoreDataManager()
-    let coreDataStack = CoreDataManager()
+    let coreDataStack = StorageManager()
     
     var user: User?
     
@@ -26,7 +24,7 @@ class ProfileViewController: UIViewController {
     private lazy var nameLable: UILabel = {
         var lable = UILabel()
         lable.translatesAutoresizingMaskIntoConstraints = false
-        lable.text = "Иван Иванов"
+        lable.text = ""
         lable.font = UIFont.boldSystemFont(ofSize: 30)
         lable.textColor = .mainColor
         return lable
@@ -39,7 +37,7 @@ class ProfileViewController: UIViewController {
         textView.isEditable = false
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.backgroundColor = backView.backgroundColor
-        textView.text = "\u{1F496} программировать под iOS \n😍 убирать варнинги \n😍 верстать в storyboard'ах\n\u{1F496} убирать варнинги \n\u{1F496} ещё раз убирать варнинги"
+        textView.text = ""
         return textView
     }()
     
@@ -135,13 +133,12 @@ class ProfileViewController: UIViewController {
                                       preferredStyle: .alert)
     
     
-    
+    var ready: Bool = false
     //MARK: Properties
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        coreDataStack.activate()
+        coreDataStack.activate(completion: { _ in })
         coreDataStack.load { (user) in
             self.user = user
         }
@@ -208,8 +205,9 @@ class ProfileViewController: UIViewController {
             aboutText.widthAnchor.constraint(equalTo: backView.widthAnchor, multiplier: 0.8),
             aboutText.topAnchor.constraint(equalTo: nameLable.bottomAnchor, constant: 20),
             
-            nameLable.leftAnchor.constraint(equalTo: aboutText.leftAnchor),
-            nameLable.rightAnchor.constraint(equalTo: aboutText.rightAnchor)
+            nameLable.centerXAnchor.constraint(equalTo: aboutText.centerXAnchor),
+            nameLable.leftAnchor.constraint(greaterThanOrEqualTo: aboutText.leftAnchor),
+            nameLable.rightAnchor.constraint(lessThanOrEqualTo: aboutText.rightAnchor)
         ])
         
         // MARK: editButton

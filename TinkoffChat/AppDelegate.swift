@@ -66,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
-        CoreDataManager.instance.saveContext()
+        StorageManager.instance.saveContext()
         
         if (ProcessInfo.processInfo.environment["AD_LIFESYCLE_LOGS"] == "consolePrint") {
             print("Application moved from ACTIVE to NOT ACTIVE: applicationWillTerminate")
