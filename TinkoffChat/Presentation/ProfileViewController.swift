@@ -242,6 +242,7 @@ class ProfileViewController: UIViewController {
         editAvatarField.backgroundColor = .mainLightColor
         editAvatarField.translatesAutoresizingMaskIntoConstraints = false
         
+        
         //MARK: editNameField
         view.addSubview(editNameField)
         editNameField.backgroundColor = .mainLightColor
@@ -309,6 +310,9 @@ class ProfileViewController: UIViewController {
         editAboutField.endEditing(false)
         editAvatarField.endEditing(false)
         backEditButton.isHidden = false
+        editNameField.becomeFirstResponder()
+        editAboutField.becomeFirstResponder()
+        editAvatarField.becomeFirstResponder()
 
         
         NSLayoutConstraint.activate([
