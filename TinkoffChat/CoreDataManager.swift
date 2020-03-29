@@ -14,7 +14,7 @@ class CoreDataManager{
     //Singleton
     static let instance = CoreDataManager()
     static let managedObject = User()
-
+    
     func activateCoreData(){
         if (CoreDataManager.managedObject.name == nil){
             basicEntity()
@@ -36,12 +36,12 @@ class CoreDataManager{
     // var fetchedResultsController = instance.fetchedResultsController(entityName: "User", keyForSort: "name")
     // Fetched Results Controller for Entity Name
     /*func fetchedResultsController(entityName: String, keyForSort: String) -> NSFetchedResultsController<NSFetchRequestResult> {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-        let sortDescriptor = NSSortDescriptor(key: keyForSort, ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.instance.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
-        return fetchedResultsController
-    }*/
+     let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
+     let sortDescriptor = NSSortDescriptor(key: keyForSort, ascending: true)
+     fetchRequest.sortDescriptors = [sortDescriptor]
+     let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.instance.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
+     return fetchedResultsController
+     }*/
     
     // MARK: - Core Data stack
     lazy var applicationDocumentsDirectory: NSURL = {
@@ -84,16 +84,11 @@ class CoreDataManager{
     }()
     
     //MARK: Core Data saving support
-    
     lazy var persistentContainer: NSPersistentContainer = {
         
         let container = NSPersistentContainer(name: "TinkoffChat")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                
-                
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
@@ -114,6 +109,11 @@ class CoreDataManager{
 }
 
 extension CoreDataManager: StorageProtocol{
+    func activate() {
+        if (CoreDataManager.managedObject.name == nil){
+            basicEntity()
+        }
+    }
     
     func basicEntity() {
         CoreDataManager.managedObject.name = "Иван Иванов"
@@ -129,6 +129,7 @@ extension CoreDataManager: StorageProtocol{
     }
     
     func save(profile: User, completion: @escaping (Bool) -> Void) {
+        
         CoreDataManager.managedObject.name = profile.name
         CoreDataManager.managedObject.about = profile.about
         CoreDataManager.managedObject.avatar = profile.avatar

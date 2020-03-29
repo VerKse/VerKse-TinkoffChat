@@ -10,11 +10,8 @@ import UIKit
 import CoreData
 
 class ProfileViewController: UIViewController {
-    //MARK: PersistentContainer
-    //let container = StorageManager()
-    
-    //MARK: CoreData
-    //var fetchedResultsController = CoreDataManager.instance.fetchedResultsController(entityName: "User", keyForSort: "name")
+    //MARK: PersistentContainer -- StorageManager()
+    //MARK: CoreData -- CoreDataManager()
     let coreDataStack = CoreDataManager()
     
     var user: User?
@@ -143,8 +140,8 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //MARK: CoreData
-        coreDataStack.activateCoreData()
+        
+        coreDataStack.activate()
         coreDataStack.load { (user) in
             self.user = user
         }
@@ -260,6 +257,7 @@ class ProfileViewController: UIViewController {
         editAboutField.backgroundColor = .mainLightColor
         editAboutField.text = aboutText.text
         editAboutField.font = UIFont.systemFont(ofSize: 18)
+        editAboutField.textColor = .mainColor
         editAboutField.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

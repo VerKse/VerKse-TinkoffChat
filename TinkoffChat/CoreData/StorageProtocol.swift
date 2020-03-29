@@ -14,7 +14,7 @@ protocol StorageProtocol {
     func load(completion: @escaping (User?) -> Void)
     func save(profile: User, completion: @escaping (Bool) -> Void)
     func basicEntity()
-
+    func activate()
 }
 
 

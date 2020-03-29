@@ -12,6 +12,7 @@ import CoreData
 class StorageManager {
     
     private(set) static var container = activateContainer()
+    var user : User?
     
     private static func activateContainer() -> NSPersistentContainer {
         let container = NSPersistentContainer(name: "TinkoffChatt")
@@ -26,32 +27,44 @@ class StorageManager {
 }
 
 extension StorageManager: StorageProtocol{
-    
-    func load(completion: @escaping (User?) -> Void) {
+    func activate(){
         StorageManager.container.loadPersistentStores { (_, error) in
             if let error = error {
                 assertionFailure(error.localizedDescription)
             }
         }
         
+        StorageManager.container.performBackgroundTask{ (context) in
+            let fetchRequest = NSFetchRequest<User>(entityName: "User")
+            let allUsers = try? context.fetch(fetchRequest)
+            if (allUsers?.isEmpty ?? true) {
+                self.basicEntity()
+            }
+        }
+    }
+    
+    func load(completion: @escaping (User?) -> Void) {
+        
         StorageManager.container.performBackgroundTask { (context) in
             let fetchRequest = NSFetchRequest<User>(entityName: "User")
             let allUsers = try? context.fetch(fetchRequest)
             
-            completion(allUsers?.first)
+            self.user = allUsers?.first
+            completion(self.user)
             //completion(UserInfo(name: allUsers?.first?.name ?? "Default Nmae", about: allUsers?.first?.about, image: allUsers?.first?.avatar))
         }
         
     }
     
-    /// НЕ ОБНОВЛЯЕТ,  А ДОБАВЛЯЕТ
     func save(profile: User, completion: @escaping (Bool) -> Void) {
         StorageManager.container.performBackgroundTask { (context) in
-            let user = NSEntityDescription.insertNewObject(forEntityName: "User", into: context) as? User
-            user?.name = profile.name
-            user?.about = profile.about
-            user?.avatar = profile.avatar
-            try? context.save()
+            self.user?.name = profile.name
+            self.user?.about = profile.about
+            self.user?.avatar = profile.avatar
+            if (context.hasChanges) {
+                try? context.save()
+                
+            }
         }
     }
     
