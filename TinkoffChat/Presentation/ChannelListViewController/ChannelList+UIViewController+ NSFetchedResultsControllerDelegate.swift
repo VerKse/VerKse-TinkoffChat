@@ -177,7 +177,7 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
     }
     
     // MARK: - Fetched Results Controller Delegate
-    
+    /*
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
     }
@@ -229,6 +229,6 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
-    }
+    }*/
 }
 
