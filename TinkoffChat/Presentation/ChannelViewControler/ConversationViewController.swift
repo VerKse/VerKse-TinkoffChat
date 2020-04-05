@@ -202,6 +202,7 @@ class ConversationViewController: UIViewController, NSFetchedResultsControllerDe
         }
     }
     
+    // MARK: - Fetched Results Controller Delegate
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
     }
@@ -236,6 +237,8 @@ class ConversationViewController: UIViewController, NSFetchedResultsControllerDe
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
     }
+    
+    
 }
 
 extension ConversationViewController : UITableViewDataSource {
@@ -279,7 +282,6 @@ extension ConversationViewController : UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
 }
 
 
