@@ -16,7 +16,7 @@ class ConversationViewController: UIViewController, NSFetchedResultsControllerDe
     var channelIdentifier: String?
     var channelName: String?
     var messageFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
-    var messageServices: MessageServices?
+    var messageServices: ChannelServices?
     
     init(channelIdentifier: String?, channelName: String?){
         super.init(nibName: nil, bundle: nil)
@@ -26,10 +26,10 @@ class ConversationViewController: UIViewController, NSFetchedResultsControllerDe
             StorageManager.instance.fetchedResultsController(
                 entityName: "Message",
                 sortDescriptor: [NSSortDescriptor(key: "created", ascending: false)],
-                    sectionNameKeyPath: nil,
-                    predicate: NSPredicate(format: "channelID == %@", self.channelIdentifier ?? "123"),
-                    cacheName: "messageCache")
-        self.messageServices = MessageServices(channelIdentifier: self.channelIdentifier)
+                sectionNameKeyPath: nil,
+                predicate: NSPredicate(format: "channelID == %@", self.channelIdentifier ?? "123"),
+                cacheName: "messageCache")
+        self.messageServices = ChannelServices(channelIdentifier: self.channelIdentifier)
     }
     
     required init?(coder: NSCoder) {
@@ -110,52 +110,29 @@ class ConversationViewController: UIViewController, NSFetchedResultsControllerDe
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
         do{
-            try messageFetchedResultsController?.performFetch()
+            try self.messageFetchedResultsController?.performFetch()
         } catch {
             print("Error: \(error))")
         }
-        tableView.reloadData()
         
-        let scrollIndex = messageFetchedResultsController?.fetchedObjects?.count ?? 0
+        let scrollIndex = self.messageFetchedResultsController?.fetchedObjects?.count ?? 0
         
         if (scrollIndex != 0) {
-        tableView.scrollToRow(at: IndexPath(item: scrollIndex - 1, section: 0), at: .bottom, animated: false)
+            self.tableView.scrollToRow(at: IndexPath(item: scrollIndex - 1, section: 0), at: .bottom, animated: false)
         }
         
-        messageServices?.listener(completion: { _ in })
-        /*
-        reference.addSnapshotListener { [weak self]snapshot, error in
-
-            for doc in snapshot!.documents {
-                let date = doc.data()["created"] as! Timestamp
-                let message = Message()
-                message.content = stringFromAny(doc.data()["content"])
-                message.created = date.dateValue()
-                let sender = User()
-                sender.identifier = stringFromAny(doc.data()["senderID"])
-                sender.name = stringFromAny(doc.data()["senderName"])
-                message.sender = sender
-                let channel = Channel()
-                channel.identifier = doc.documentID
-                message.channel = channel
-                StorageManager.instance.saveContext()
-            }
-            
+        messageServices?.listener(completion: { _ in
+            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "messageCache")
             do{
-                try self?.messageFetchedResultsController?.performFetch()
+                try self.messageFetchedResultsController?.performFetch()
             } catch {
                 print("Error: \(error))")
             }
-            self?.tableView.reloadData()
-            
-            let scrollIndex = self?.messageFetchedResultsController?.fetchedObjects?.count ?? 0
-            
+            let scrollIndex = self.messageFetchedResultsController?.fetchedObjects?.count ?? 0
             if (scrollIndex != 0) {
-            self?.tableView.scrollToRow(at: IndexPath(item: scrollIndex - 1, section: 0), at: .bottom, animated: false)
+                self.tableView.scrollToRow(at: IndexPath(item: scrollIndex - 1, section: 0), at: .bottom, animated: false)
             }
-        }*/
-        
-        
+        })
         
         view.backgroundColor = .white        
         

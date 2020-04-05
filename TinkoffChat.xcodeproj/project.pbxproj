@@ -32,11 +32,11 @@
 		AA980558242FF781004C1253 /* StorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA980557242FF781004C1253 /* StorageProtocol.swift */; };
 		AA98055A242FF90A004C1253 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA980559242FF90A004C1253 /* UserInfo.swift */; };
 		AA997E802415299F00BCF999 /* ConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA997E7F2415299F00BCF999 /* ConversationCell.swift */; };
-		AAB6564B2427656000349583 /* FirebaseProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAB6564A2427656000349583 /* FirebaseProtocol.swift */; };
 		AAC9F412243A338F00EF03F1 /* Channel+CoreDataClass copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC9F410243A338E00EF03F1 /* Channel+CoreDataClass copy.swift */; };
 		AAC9F413243A338F00EF03F1 /* Channel+CoreDataProperties copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC9F411243A338F00EF03F1 /* Channel+CoreDataProperties copy.swift */; };
 		AAC9F415243A38DA00EF03F1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AAC9F414243A38DA00EF03F1 /* GoogleService-Info.plist */; };
-		AAC9F417243A501800EF03F1 /* FirebaseServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC9F416243A501800EF03F1 /* FirebaseServices.swift */; };
+		AAC9F417243A501800EF03F1 /* ChannelServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC9F416243A501800EF03F1 /* ChannelServices.swift */; };
+		AAC9F419243A66D600EF03F1 /* ChannelListServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAC9F418243A66D600EF03F1 /* ChannelListServices.swift */; };
 		AACA7A16242E71EB0003B750 /* penWhite.png in Resources */ = {isa = PBXBuildFile; fileRef = AACA7A15242E71EB0003B750 /* penWhite.png */; };
 		AADA7D84241C08B700616239 /* userMainColor.png in Resources */ = {isa = PBXBuildFile; fileRef = AADA7D83241C08B700616239 /* userMainColor.png */; };
 		AADE9E88240A614100557835 /* purpleArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E87240A614100557835 /* purpleArrow.png */; };
@@ -94,11 +94,11 @@
 		AA980557242FF781004C1253 /* StorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageProtocol.swift; sourceTree = "<group>"; };
 		AA980559242FF90A004C1253 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		AA997E7F2415299F00BCF999 /* ConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationCell.swift; sourceTree = "<group>"; };
-		AAB6564A2427656000349583 /* FirebaseProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseProtocol.swift; sourceTree = "<group>"; };
 		AAC9F410243A338E00EF03F1 /* Channel+CoreDataClass copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataClass copy.swift"; sourceTree = "<group>"; };
 		AAC9F411243A338F00EF03F1 /* Channel+CoreDataProperties copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataProperties copy.swift"; sourceTree = "<group>"; };
 		AAC9F414243A38DA00EF03F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "GoogleService-Info.plist"; path = "TinkoffChat/GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
-		AAC9F416243A501800EF03F1 /* FirebaseServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseServices.swift; sourceTree = "<group>"; };
+		AAC9F416243A501800EF03F1 /* ChannelServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelServices.swift; sourceTree = "<group>"; };
+		AAC9F418243A66D600EF03F1 /* ChannelListServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelListServices.swift; sourceTree = "<group>"; };
 		AACA7A15242E71EB0003B750 /* penWhite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = penWhite.png; sourceTree = "<group>"; };
 		AADA7D83241C08B700616239 /* userMainColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = userMainColor.png; sourceTree = "<group>"; };
 		AADE9E87240A614100557835 /* purpleArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = purpleArrow.png; sourceTree = "<group>"; };
@@ -327,8 +327,8 @@
 			children = (
 				AAC9F414243A38DA00EF03F1 /* GoogleService-Info.plist */,
 				AA8BBF2223F9417700D754AE /* Assets.xcassets */,
-				AAB6564A2427656000349583 /* FirebaseProtocol.swift */,
-				AAC9F416243A501800EF03F1 /* FirebaseServices.swift */,
+				AAC9F416243A501800EF03F1 /* ChannelServices.swift */,
+				AAC9F418243A66D600EF03F1 /* ChannelListServices.swift */,
 				AAFDEDB12427941500AB3FA5 /* ConversationCellModel.swift */,
 				AAFDEDAF2427937800AB3FA5 /* MessageCellModel.swift */,
 			);
@@ -522,12 +522,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAC9F412243A338F00EF03F1 /* Channel+CoreDataClass copy.swift in Sources */,
+				AAC9F419243A66D600EF03F1 /* ChannelListServices.swift in Sources */,
 				AA997E802415299F00BCF999 /* ConversationCell.swift in Sources */,
 				AAFDEDB02427937800AB3FA5 /* MessageCellModel.swift in Sources */,
 				AAFDEDB22427941500AB3FA5 /* ConversationCellModel.swift in Sources */,
 				AAC9F413243A338F00EF03F1 /* Channel+CoreDataProperties copy.swift in Sources */,
 				AADE9EAD240C188500557835 /* ConversationViewController.swift in Sources */,
-				AAB6564B2427656000349583 /* FirebaseProtocol.swift in Sources */,
 				AAFAFBE32439E6C1000AF0D6 /* ChannelList+UIViewController+ NSFetchedResultsControllerDelegate.swift in Sources */,
 				AA98055A242FF90A004C1253 /* UserInfo.swift in Sources */,
 				AA8BBF1B23F9417200D754AE /* ViewController.swift in Sources */,
@@ -535,7 +535,7 @@
 				AAE7132F242649A700A2C6FF /* ChannelAddViewController.swift in Sources */,
 				AA980558242FF781004C1253 /* StorageProtocol.swift in Sources */,
 				AAFAFBE52439E6FA000AF0D6 /* ChannelList+UITableViewDataSource.swift in Sources */,
-				AAC9F417243A501800EF03F1 /* FirebaseServices.swift in Sources */,
+				AAC9F417243A501800EF03F1 /* ChannelServices.swift in Sources */,
 				AA6B5822242F6F9C00AEB30B /* User+CoreDataProperties.swift in Sources */,
 				AA0636C524140B8B0090E2EA /* MessageCell.swift in Sources */,
 				AA7B45082437BEC90048BB62 /* StorageManager.swift in Sources */,

@@ -79,44 +79,20 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
         return spinner
     }
     
+    var channelService = ChannelListServices()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         channelFetchedResultsController.delegate = self
-        /*
-         reference.addSnapshotListener { [weak self] snapshot, error in
-         for doc in snapshot!.documents {
-         let date = doc.data()["lastActivity"] as? Timestamp
-         let channelManagedObject = Channel()
-         channelManagedObject.name = stringFromAny(doc.data()["name"])
-         channelManagedObject.identifier = doc.documentID
-         channelManagedObject.lastMessage = stringFromAny(doc.data()["lastMessage"])
-         channelManagedObject.lastActivity = date?.dateValue()
-         guard (channelManagedObject.lastActivity != nil) else {
-         StorageManager.instance.saveContext()
-         return
-         }
-         if (channelManagedObject.lastActivity! < Date.init(timeIntervalSinceNow: -10*60)){
-         channelManagedObject.isActive = true
-         }else {channelManagedObject.isActive = false}
-         StorageManager.instance.saveContext()
-         }
-         do{
-         try self?.channelFetchedResultsController.performFetch()
-         } catch {
-         print("Error: \(error))")
-         }
-         
-         self?.tableView.reloadData()
-         }
-         */
-        do{
-            try channelFetchedResultsController.performFetch()
-        } catch {
-            print("Error: \(error))")
-        }
-        
-        ChannelServices.instance.listener(completion: { _ in })
-        
+    
+        channelService.listener(completion: { _ in            
+            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "channelCache")
+            do{
+                try self.channelFetchedResultsController.performFetch()
+            } catch {
+                print("Error: \(error))")
+            }
+        })
         
         //MARK: bottomStack
         bottomView.addSubview(profileButton)
@@ -199,9 +175,9 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
         super.viewWillDisappear(animated)
         //navigationController?.navigationBar.prefersLargeTitles = false
     }
-/*
-     // MARK: - Fetched Results Controller Delegate
-     
+    
+    // MARK: - Fetched Results Controller Delegate
+    
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
     }
@@ -254,6 +230,5 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
     }
-    */
 }
 
