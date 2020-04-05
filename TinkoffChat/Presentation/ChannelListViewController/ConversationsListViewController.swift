@@ -8,27 +8,42 @@
 
 import UIKit
 import Firebase
+
 @available(iOS 13.0, *)
 class ConversationsListViewController: UIViewController{
     
-    private var onlineData: [ConversationCellModel] = []
-    private var historyData: [ConversationCellModel] = []
     private lazy var db = Firestore.firestore()
     private lazy var reference = db.collection("channels")
-    
     private lazy var firebaseService = GeneralFirebaseService(collection: "channel")
     
-    /*private var tableView : UITableView {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44
-        return tableView
-    }*/
+    private lazy var channelFetchedResultsController =
+        StorageManager.instance.fetchedResultsController(entityName: "Channel",
+                                                     keyForSort: "lastActivity",
+                                                     sectionNameKeyPath: "lastActivity",
+                                                     sortAscending: false,
+                                                     predicate: nil)
+    
+    private lazy var onlinePredicate = NSPredicate(format: "lastActivity < %@",
+                                                   Date.init(timeIntervalSinceNow: -10*60) as NSDate)
+    private lazy var offlinePredicate = NSPredicate(format: "lastActivity > %@",
+                                                    Date.init(timeIntervalSinceNow: -10*60)  as NSDate)
+    
+    private lazy var onlineChannelFetchedResultsController =
+        StorageManager.instance.fetchedResultsController(entityName: "Channel",
+                                                 keyForSort: "lastActivity",
+                                                 sectionNameKeyPath: nil,
+                                                 sortAscending: false,
+                                                 predicate: onlinePredicate)
+    
+    private lazy var offlineChannelFetchedResultsController =
+        StorageManager.instance.fetchedResultsController(entityName: "Channel",
+                                                 keyForSort: "lastActivity",
+                                                 sectionNameKeyPath: nil,
+                                                 sortAscending: false,
+                                                 predicate: nil)
     
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
+    
     
     let insets = CGFloat(5)
     private lazy var profileButton: UIButton = {
@@ -73,9 +88,6 @@ class ConversationsListViewController: UIViewController{
         var bottomStack = UIView()
         bottomStack.backgroundColor = .mainColor
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
-        //bottomStack.axis  = .horizontal
-        //bottomStack.distribution  = .equalCentering
-        //bottomStack.alignment = .center
         return bottomStack
     }()
     
@@ -86,7 +98,7 @@ class ConversationsListViewController: UIViewController{
     }
     
     private lazy var testChannel = ""
-    private lazy var channelList = [Channel]()
+    private lazy var channelList = [ChannelOld]()
     var data = [ConversationCellModel]()
     
     
@@ -105,28 +117,23 @@ class ConversationsListViewController: UIViewController{
         
         //FirebaseApp.configure()
         reference.addSnapshotListener { [weak self] snapshot, error in
-            self?.data.removeAll()
-            self?.onlineData.removeAll()
-            self?.historyData.removeAll()
-            self?.channelList.removeAll()
-            
             for doc in snapshot!.documents {
                 let date = doc.data()["lastActivity"] as? Timestamp
-                let newChannel = Channel(identifier: doc.documentID,
-                                         name: stringFromAny(doc.data()["name"]),
-                                         lastMessage: stringFromAny(doc.data()["lastMessage"]),
-                                         lastActivity: date?.dateValue())
-                self?.channelList.append(newChannel)
+                let channel = Channel()
+                channel.name = stringFromAny(doc.data()["name"])
+                channel.identifier = doc.documentID
+                channel.lastMessage = stringFromAny(doc.data()["lastMessage"])
+                channel.lastActivity = date?.dateValue()
+                StorageManager.instance.saveContext()
+            }
+            do{
+                try self?.onlineChannelFetchedResultsController.performFetch()
+                try self?.offlineChannelFetchedResultsController.performFetch()
+            } catch {
+                print("Error: \(error))")
             }
             
-            for channel in self!.channelList{
-                self!.data.append(ConversationCellModel(channel: channel, hasUnreadMessage: false))
-            }
-            self!.generateSectionsData(dataSet: self!.data)
-            
-            
-            self!.spinner.isHidden = true
-            self!.tableView.reloadData()
+            self?.tableView.reloadData()
         }
         
 
@@ -196,27 +203,6 @@ class ConversationsListViewController: UIViewController{
         present(channelAddViewController, animated: true, completion: nil)
     }
     
-    func generateSectionsData( dataSet: [ConversationCellModel]){
-        for data in dataSet {
-            if (data.channel.lastActivity==nil ) { historyData.append(data) }
-            else if (data.channel.lastActivity!>Date.init(timeIntervalSinceNow: -10*60)){
-                onlineData.append(data)
-            } else {
-                historyData.append(data)
-            }
-            onlineData = onlineData.sorted { (ccm1, ccm2) -> Bool in
-                if (ccm1.channel.lastActivity! < ccm2.channel.lastActivity!){
-                    return false
-                } else {return true}
-            }
-            historyData = historyData.sorted { (ccm1, ccm2) -> Bool in
-                if (ccm1.channel.name! > ccm2.channel.name!){
-                    return false
-                } else {return true}
-            }
-        }
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.mainColor]
@@ -225,7 +211,7 @@ class ConversationsListViewController: UIViewController{
         navigationController?.navigationBar.titleTextAttributes = textAttributes
         navigationController?.navigationBar.largeTitleTextAttributes = textAttributes
         navigationItem.title = "Tinkoff Chat"
-        navigationItem.largeTitleDisplayMode = .automatic;
+        navigationItem.largeTitleDisplayMode = .automatic
         //navigationItem.searchController = UISearchController(searchResultsController: nil)
         //navigationItem.hidesSearchBarWhenScrolling = true
         navigationController?.navigationBar.sizeToFit()
@@ -242,34 +228,61 @@ class ConversationsListViewController: UIViewController{
 @available(iOS 13.0, *)
 extension ConversationsListViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         switch section {
         case 0:
-            return self.onlineData.count
+            return onlineChannelFetchedResultsController.fetchedObjects?.count ?? 0
         case 1:
-            return self.historyData.count
+            return offlineChannelFetchedResultsController.fetchedObjects?.count ?? 0
         default:
             return 0
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
         let identifier = String(describing: ConversationCell.self)
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? ConversationCell else {
             return UITableViewCell()
         }
         
+        var channel = Channel()
+        
         switch indexPath.section {
         case 0:
-            let user = onlineData[indexPath.row]
+            channel = onlineChannelFetchedResultsController.object(at: indexPath) as! Channel
             cell.backgroundColor = .yellowLight
-            makeCell(cell: cell, user: user)
         case 1:
-            let user = historyData[indexPath.row]
+            channel = offlineChannelFetchedResultsController.object(at: indexPath as IndexPath) as! Channel
             cell.backgroundColor = .white
-            makeCell(cell: cell, user: user)
         default:
-            cell.textLabel?.text = "Cell #\(indexPath.row)"
+            break;
+        }
+        
+        cell.nameLable.text = channel.name
+        cell.identifierLable.text = channel.identifier
+        
+        //date
+        let formatter = DateFormatter()
+        if (channel.lastActivity == nil ) {
+            cell.dateLable.text = "date"
+        } else {
+            if(Calendar.current.isDateInToday(channel.lastActivity!)) {
+                formatter.dateFormat = "HH:mm"
+            } else {
+                formatter.dateFormat = "dd MMM"
+                }
+            cell.dateLable.text = formatter.string(from: channel.lastActivity!)
+        }
+        
+        //message
+        if (channel.lastMessage != nil) {
+            cell.messageLable.font = .systemFont(ofSize: 16)
+            cell.messageLable.text = channel.lastMessage
+        } else {
+            cell.messageLable.font = .systemFont(ofSize: 16)
+            cell.messageLable.text = "No messages yet"
         }
         
         return cell
@@ -277,7 +290,7 @@ extension ConversationsListViewController : UITableViewDataSource {
     
     func makeCell( cell: ConversationCell,  user: ConversationCellModel){
         
-        cell.nameLable.text = user.channel.name
+        
         if (user.hasUnreadMessage) {
             cell.messageLable.font = .boldSystemFont(ofSize: 16)
             cell.messageLable.text = user.channel.lastMessage
@@ -301,30 +314,16 @@ extension ConversationsListViewController : UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
-    }
+}
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        switch indexPath.section {
-        case 0:
-            let channel = Channel(identifier: onlineData[indexPath.row].channel.identifier,
-                                  name: onlineData[indexPath.row].channel.name,
-                                  lastMessage: nil,
-                                  lastActivity: nil)
-            let conversationViewController = ConversationViewController.init(channel: channel)
-            navigationController?.pushViewController(conversationViewController, animated: true)
-            break
-        case 1:
-            let channel = Channel(identifier: historyData[indexPath.row].channel.identifier,
-                                  name: historyData[indexPath.row].channel.name,
-                                  lastMessage: nil,
-                                  lastActivity: nil)
-            let conversationViewController = ConversationViewController.init(channel: channel)
-            navigationController?.pushViewController(conversationViewController, animated: true)
-            break
-        default:
-            break
-        }
+        guard let cell = tableView.cellForRow(at: indexPath) as? ConversationCell else {return}
+        
+        let conversationViewController = ConversationViewController.init(channelIdentifier: cell.identifierLable.text,
+                                                                         channelName: cell.nameLable.text)
+        navigationController?.pushViewController(conversationViewController, animated: true)
+        
     }
 }
 

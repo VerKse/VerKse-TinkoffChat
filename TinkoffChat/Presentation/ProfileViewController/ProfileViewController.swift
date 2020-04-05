@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 class ProfileViewController: UIViewController {
-    let coreDataStack = StorageManager()
+    //let coreDataStack = StorageManager()
     
     var user: User?
     
@@ -138,8 +138,8 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        coreDataStack.activate(completion: { _ in })
-        coreDataStack.load { (user) in
+        StorageManager.instance.activate(completion: { _ in })
+        StorageManager.instance.load { (user) in
             self.user = user
         }
         
@@ -402,7 +402,7 @@ class ProfileViewController: UIViewController {
         self.user?.about = editAboutField.text
         self.user?.avatar = editAvatarField.text
         
-        coreDataStack.save(profile: self.user!, completion: { _ in })
+        StorageManager.instance.save(profile: self.user!, completion: { _ in })
         return true
     }
     

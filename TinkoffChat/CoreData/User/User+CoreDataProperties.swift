@@ -20,5 +20,7 @@ extension User {
     @NSManaged public var name: String?
     @NSManaged public var about: String?
     @NSManaged public var avatar: String?
+    @NSManaged public var identifier: String?
+    @NSManaged public var sentMessages: NSSet?
 
 }

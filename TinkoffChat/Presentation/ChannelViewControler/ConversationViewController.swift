@@ -8,15 +8,25 @@
 
 import UIKit
 import Firebase
+import CoreData
 
 class ConversationViewController: UIViewController{
     
-    var channel: Channel?
+    var channel: ChannelOld?
+    var channelIdentifier: String?
+    var channelName: String?
+    var messageFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     
-    init(channel: Channel){
+    init(channelIdentifier: String?, channelName: String?){
         super.init(nibName: nil, bundle: nil)
-        self.navigationItem.title = channel.name
-        self.channel = channel
+        self.navigationItem.title = channelName
+        self.channelIdentifier = channelIdentifier
+        self.messageFetchedResultsController =
+            StorageManager.instance.fetchedResultsController(entityName: "Message",
+                                                             keyForSort: "lastActivity",
+                                                             sectionNameKeyPath: nil,
+                                                             sortAscending: true,
+                                                             predicate: NSPredicate(format: "channelID == %@", channelIdentifier ?? ""))
     }
     
     required init?(coder: NSCoder) {
@@ -28,8 +38,8 @@ class ConversationViewController: UIViewController{
     private lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
     
     private lazy var reference: CollectionReference = {
-        guard let channelIdentifier = channel?.identifier else { fatalError() }
-        return db.collection("channels").document(channelIdentifier).collection("messages")
+        guard (channelIdentifier != nil) else { fatalError() }
+        return db.collection("channels").document(channelIdentifier!).collection("messages")
     }()
     
     //private lazy var messageService = GeneralMessagesService(channel: channel ?? Channel(identifier: "", name: "", lastMessage: "", lastActivity: Date.init(timeIntervalSinceNow: 0)))
@@ -82,10 +92,13 @@ class ConversationViewController: UIViewController{
         return tableView
     }()
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.hideKeyboardWhenTappedAround()
+        
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -108,7 +121,7 @@ class ConversationViewController: UIViewController{
                 let newMess = MessageCellModel(content: doc.data()["content"] as! String,
                                                created: date.dateValue(),
                                                senderId: stringFromAny(doc.data()["senderID"]),
-                                                senderName: stringFromAny(doc.data()["senderName"]))
+                                               senderName: stringFromAny(doc.data()["senderName"]))
                 self?.messageList.append(newMess)
             }
             
@@ -181,9 +194,9 @@ class ConversationViewController: UIViewController{
                 view.frame.origin.y -= keyboardSize.height
             }
         }
-
+        
     }
-
+    
     @objc func keyboardWillHide(_ notification: Notification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if view.frame.origin.y != 0 {
@@ -199,23 +212,23 @@ extension ConversationViewController : UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let message = messageFetchedResultsController!.object(at: indexPath as IndexPath) as! Message
         
         let identifier = String(describing: MessageCell.self)
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MessageCell else {
             return UITableViewCell()
-        
+            
         }
-/*      let messageLeftAlign = cell.inputMessText.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 10)
-        let messageRightAlign = cell.inputMessText.rightAnchor.constraint(equalTo: cell.rightAnchor, constant: -10)
-*/
-        let message = messageList[indexPath.row]
-        if (message.senderId == String(UIDevice.current.identifierForVendor!.hashValue)){
-
+        /*      let messageLeftAlign = cell.inputMessText.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 10)
+         let messageRightAlign = cell.inputMessText.rightAnchor.constraint(equalTo: cell.rightAnchor, constant: -10)
+         */
+        
+        if (message.sender?.identifier == String(UIDevice.current.identifierForVendor!.hashValue)){
             cell.senderNameLable.text = "me"
             cell.inputMessText.backgroundColor = UIColor.mainColor
         } else{
-            cell.senderNameLable.text = message.senderName
+            cell.senderNameLable.text = message.sender?.name
             cell.inputMessText.backgroundColor = UIColor.blueGrey500.withAlphaComponent(0.25)
         }
         cell.isUserInteractionEnabled = false
