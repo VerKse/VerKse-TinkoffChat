@@ -9,14 +9,14 @@
 import Foundation
 
 struct ConversationCellModel {
-    let channel: Channel
+    let channel: ChannelOld
     let hasUnreadMessage : Bool
 }
 
 protocol ConversationCellConfiguration {
     associatedtype ConversationCellModel
     
-    var channel : Channel {get set}
+    var channel : ChannelOld {get set}
     var hasUnreadMessage : Bool?{get set}
     
     func configure(with model: ConversationCellModel)

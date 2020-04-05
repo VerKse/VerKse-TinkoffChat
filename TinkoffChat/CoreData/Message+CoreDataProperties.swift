@@ -16,8 +16,10 @@ extension Message {
         return NSFetchRequest<Message>(entityName: "Message")
     }
 
-    @NSManaged public var text: String?
-    @NSManaged public var time: Date?
-    @NSManaged public var channelID: Channel?
+    @NSManaged public var content: String?
+    @NSManaged public var created: Date
+    @NSManaged public var senderName: String?
+    @NSManaged public var channel: Channel?
+    @NSManaged public var sender: User?
 
 }

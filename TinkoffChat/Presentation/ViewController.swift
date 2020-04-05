@@ -9,7 +9,7 @@
 
 import UIKit
 
-struct Channel {
+struct ChannelOld {
     let identifier: String
     let name: String?
     let lastMessage: String?

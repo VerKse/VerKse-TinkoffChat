@@ -19,11 +19,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
-        let navigationController = UINavigationController.init(rootViewController: ConversationsListViewController())
+        let navigationController = UINavigationController.init(rootViewController: ChannelList())
         self.window = UIWindow.init(frame: UIScreen.main.bounds)
         self.window?.rootViewController = navigationController
-        self.window?.makeKeyAndVisible()
-
+        self.window?.makeKeyAndVisible()        
         
         if (ProcessInfo.processInfo.environment["AD_LIFESYCLE_LOGS"] == "consolePrint") {
             print ("Application moved from NOT RUNNING to INACTIVE: application")

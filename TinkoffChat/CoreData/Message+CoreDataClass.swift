@@ -11,5 +11,7 @@ import CoreData
 
 @objc(Message)
 public class Message: NSManagedObject {
-
+    convenience init() {
+        self.init(entity: StorageManager.instance.entityForName(entityName: "Message"), insertInto: StorageManager.instance.managedObjectContext)
+    }
 }

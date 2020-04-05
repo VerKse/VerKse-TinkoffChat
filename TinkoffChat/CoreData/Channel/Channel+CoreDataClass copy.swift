@@ -11,5 +11,7 @@ import CoreData
 
 @objc(Channel)
 public class Channel: NSManagedObject {
-
+    convenience init() {
+        self.init(entity: StorageManager.instance.entityForName(entityName: "Channel"), insertInto: StorageManager.instance.managedObjectContext)
+    }    
 }

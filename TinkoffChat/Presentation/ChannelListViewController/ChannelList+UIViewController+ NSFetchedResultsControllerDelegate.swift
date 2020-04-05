@@ -16,26 +16,16 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
     
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
-    lazy var firebaseService = GeneralFirebaseService(collection: "channel")
-        
+    
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
-    lazy var  onlineChannelFetchedResultsController =
-        StorageManager.instance.fetchedResultsController(entityName: "Channel",
-                                                 keyForSort: "lastActivity",
-                                                 sectionNameKeyPath: nil,
-                                                 sortAscending: false,
-                                                 predicate: NSPredicate(format: "lastActivity < %@",
-                                                 Date.init(timeIntervalSinceNow: -10*60) as NSDate))
-    
-    lazy var offlineChannelFetchedResultsController =
-        StorageManager.instance.fetchedResultsController(entityName: "Channel",
-                                                 keyForSort: "lastActivity",
-                                                 sectionNameKeyPath: nil,
-                                                 sortAscending: false,
-                                                 predicate: NSPredicate(format: "lastActivity > %@",
-                                                 Date.init(timeIntervalSinceNow: -10*60) as NSDate))
-    
+    lazy var channelFetchedResultsController =
+        StorageManager.instance.fetchedResultsController(
+            entityName: "Channel",
+            sortDescriptor: [NSSortDescriptor(key: "isActive", ascending: true), NSSortDescriptor(key: "lastActivity", ascending: true)],
+            sectionNameKeyPath: "isActive",
+            predicate: nil,
+            cacheName: "channelCache")
     let insets = CGFloat(5)
     
     lazy var profileButton: UIButton = {
@@ -91,28 +81,42 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        onlineChannelFetchedResultsController.delegate = self
-        offlineChannelFetchedResultsController.delegate = self
-        
-        reference.addSnapshotListener { [weak self] snapshot, error in
-            for doc in snapshot!.documents {
-                let date = doc.data()["lastActivity"] as? Timestamp
-                let channel = Channel()
-                channel.name = stringFromAny(doc.data()["name"])
-                channel.identifier = doc.documentID
-                channel.lastMessage = stringFromAny(doc.data()["lastMessage"])
-                channel.lastActivity = date?.dateValue()
-                StorageManager.instance.saveContext()
-            }
-            
-            do{
-                try self?.onlineChannelFetchedResultsController.performFetch()
-                try self?.offlineChannelFetchedResultsController.performFetch()
-            } catch {
-                print("Error: \(error))")
-            }
-            self?.tableView.reloadData()
+        channelFetchedResultsController.delegate = self
+        /*
+         reference.addSnapshotListener { [weak self] snapshot, error in
+         for doc in snapshot!.documents {
+         let date = doc.data()["lastActivity"] as? Timestamp
+         let channelManagedObject = Channel()
+         channelManagedObject.name = stringFromAny(doc.data()["name"])
+         channelManagedObject.identifier = doc.documentID
+         channelManagedObject.lastMessage = stringFromAny(doc.data()["lastMessage"])
+         channelManagedObject.lastActivity = date?.dateValue()
+         guard (channelManagedObject.lastActivity != nil) else {
+         StorageManager.instance.saveContext()
+         return
+         }
+         if (channelManagedObject.lastActivity! < Date.init(timeIntervalSinceNow: -10*60)){
+         channelManagedObject.isActive = true
+         }else {channelManagedObject.isActive = false}
+         StorageManager.instance.saveContext()
+         }
+         do{
+         try self?.channelFetchedResultsController.performFetch()
+         } catch {
+         print("Error: \(error))")
+         }
+         
+         self?.tableView.reloadData()
+         }
+         */
+        do{
+            try channelFetchedResultsController.performFetch()
+        } catch {
+            print("Error: \(error))")
         }
+        
+        ChannelServices.instance.listener(completion: { _ in })
+        
         
         //MARK: bottomStack
         bottomView.addSubview(profileButton)
@@ -184,25 +188,40 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
         super.viewWillAppear(animated)
         let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.mainColor]
         
-        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.navigationBar.titleTextAttributes = textAttributes
         navigationController?.navigationBar.largeTitleTextAttributes = textAttributes
         navigationItem.title = "Tinkoff Chat"
         navigationItem.largeTitleDisplayMode = .automatic
-        //navigationItem.searchController = UISearchController(searchResultsController: nil)
-        //navigationItem.hidesSearchBarWhenScrolling = true
-        navigationController?.navigationBar.sizeToFit()
-        
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         //navigationController?.navigationBar.prefersLargeTitles = false
     }
-    
+/*
+     // MARK: - Fetched Results Controller Delegate
+     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        
+        let section = IndexSet(integer: sectionIndex)
+        
+        switch type {
+        case .delete:
+            tableView.deleteSections(section, with: .automatic)
+        case .insert:
+            tableView.insertSections(section, with: .automatic)
+        case .move:
+            break
+        case .update:
+            break
+        @unknown default:
+            break
+        }
     }
     
     private func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
@@ -213,9 +232,9 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
             }
         case .update:
             if let indexPath = indexPath {
-                let channel = onlineChannelFetchedResultsController.object(at: indexPath as IndexPath) as! Channel
-                let cell = tableView.cellForRow(at: indexPath as IndexPath)
-                cell!.textLabel?.text = channel.name
+                let channel = channelFetchedResultsController.object(at: indexPath as IndexPath) as! Channel
+                let cell = tableView.cellForRow(at: indexPath as IndexPath) as! ConversationCell
+                cell.nameLable.text = channel.name
             }
         case .move:
             if let indexPath = indexPath {
@@ -235,5 +254,6 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
     }
-    
+    */
 }
+

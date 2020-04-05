@@ -131,8 +131,7 @@ class ProfileViewController: UIViewController {
     let failAlert = UIAlertController(title: "Изменения не успешно сохранены",
                                       message: "Абсолютно не успешно.",
                                       preferredStyle: .alert)
-    
-    
+
     var ready: Bool = false
     //MARK: Properties
     override func viewDidLoad() {
@@ -195,14 +194,13 @@ class ProfileViewController: UIViewController {
         //MARK: backView: nameLable + aboutText
         NSLayoutConstraint.activate([
             backView.topAnchor.constraint(equalTo: avatarImg.bottomAnchor, constant: -10),
-            backView.bottomAnchor.constraint(equalTo: aboutText.bottomAnchor, constant: 30),
+            backView.bottomAnchor.constraint(equalTo: aboutText.bottomAnchor, constant: 50),
             backView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             backView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier:0.9),
             
             nameLable.topAnchor.constraint(equalTo: backView.topAnchor, constant: 40),
             
             aboutText.centerXAnchor.constraint(equalTo: backView.centerXAnchor),
-            aboutText.widthAnchor.constraint(equalTo: backView.widthAnchor, multiplier: 0.8),
             aboutText.topAnchor.constraint(equalTo: nameLable.bottomAnchor, constant: 20),
             
             nameLable.centerXAnchor.constraint(equalTo: aboutText.centerXAnchor),

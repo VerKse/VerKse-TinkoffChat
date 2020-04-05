@@ -10,30 +10,32 @@ import UIKit
 import Firebase
 import CoreData
 
-class ConversationViewController: UIViewController{
+class ConversationViewController: UIViewController, NSFetchedResultsControllerDelegate{
     
     var channel: ChannelOld?
     var channelIdentifier: String?
     var channelName: String?
     var messageFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
+    var messageServices: MessageServices?
     
     init(channelIdentifier: String?, channelName: String?){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = channelName
         self.channelIdentifier = channelIdentifier
         self.messageFetchedResultsController =
-            StorageManager.instance.fetchedResultsController(entityName: "Message",
-                                                             keyForSort: "lastActivity",
-                                                             sectionNameKeyPath: nil,
-                                                             sortAscending: true,
-                                                             predicate: NSPredicate(format: "channelID == %@", channelIdentifier ?? ""))
+            StorageManager.instance.fetchedResultsController(
+                entityName: "Message",
+                sortDescriptor: [NSSortDescriptor(key: "created", ascending: false)],
+                    sectionNameKeyPath: nil,
+                    predicate: NSPredicate(format: "channelID == %@", self.channelIdentifier ?? "123"),
+                    cacheName: "messageCache")
+        self.messageServices = MessageServices(channelIdentifier: self.channelIdentifier)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private lazy var messageList = [MessageCellModel]()
     private lazy var db = Firestore.firestore()
     private lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
     
@@ -41,8 +43,6 @@ class ConversationViewController: UIViewController{
         guard (channelIdentifier != nil) else { fatalError() }
         return db.collection("channels").document(channelIdentifier!).collection("messages")
     }()
-    
-    //private lazy var messageService = GeneralMessagesService(channel: channel ?? Channel(identifier: "", name: "", lastMessage: "", lastActivity: Date.init(timeIntervalSinceNow: 0)))
     
     private lazy var messageView: UITextView = {
         var messageView = UITextView()
@@ -92,13 +92,12 @@ class ConversationViewController: UIViewController{
         return tableView
     }()
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.hideKeyboardWhenTappedAround()
+        messageFetchedResultsController?.delegate = self
         
+        self.hideKeyboardWhenTappedAround()
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -110,32 +109,53 @@ class ConversationViewController: UIViewController{
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
+        do{
+            try messageFetchedResultsController?.performFetch()
+        } catch {
+            print("Error: \(error))")
+        }
+        tableView.reloadData()
         
-        //messageService.updateChannelList(tableView: tableView)
+        let scrollIndex = messageFetchedResultsController?.fetchedObjects?.count ?? 0
+        
+        if (scrollIndex != 0) {
+        tableView.scrollToRow(at: IndexPath(item: scrollIndex - 1, section: 0), at: .bottom, animated: false)
+        }
+        
+        messageServices?.listener(completion: { _ in })
+        /*
         reference.addSnapshotListener { [weak self]snapshot, error in
-            self?.spinner.isHidden = false
-            self?.messageList.removeAll()
+
             for doc in snapshot!.documents {
                 let date = doc.data()["created"] as! Timestamp
-                
-                let newMess = MessageCellModel(content: doc.data()["content"] as! String,
-                                               created: date.dateValue(),
-                                               senderId: stringFromAny(doc.data()["senderID"]),
-                                               senderName: stringFromAny(doc.data()["senderName"]))
-                self?.messageList.append(newMess)
+                let message = Message()
+                message.content = stringFromAny(doc.data()["content"])
+                message.created = date.dateValue()
+                let sender = User()
+                sender.identifier = stringFromAny(doc.data()["senderID"])
+                sender.name = stringFromAny(doc.data()["senderName"])
+                message.sender = sender
+                let channel = Channel()
+                channel.identifier = doc.documentID
+                message.channel = channel
+                StorageManager.instance.saveContext()
             }
             
-            self?.messageList = (self!.messageList.sorted(by: { (mcm1, mcm2) -> Bool in
-                if (mcm1.created < mcm2.created){
-                    return true
-                } else {return false}
-            }))
-            self?.spinner.isHidden = true
-            self?.tableView.reloadData()
-            if (self?.messageList.count != 0) {
-                self?.tableView.scrollToRow(at: IndexPath(item:(self?.messageList.count ?? 1) - 1, section: 0), at: .bottom, animated: false)
+            do{
+                try self?.messageFetchedResultsController?.performFetch()
+            } catch {
+                print("Error: \(error))")
             }
-        }
+            self?.tableView.reloadData()
+            
+            let scrollIndex = self?.messageFetchedResultsController?.fetchedObjects?.count ?? 0
+            
+            if (scrollIndex != 0) {
+            self?.tableView.scrollToRow(at: IndexPath(item: scrollIndex - 1, section: 0), at: .bottom, animated: false)
+            }
+        }*/
+        
+        
         
         view.backgroundColor = .white        
         
@@ -181,7 +201,7 @@ class ConversationViewController: UIViewController{
         let newMessage = MessageCellModel(content: messageView.text,
                                           created: .init(timeIntervalSinceNow: 0),
                                           senderId: String(UIDevice.current.identifierForVendor!.hashValue),
-                                          senderName: "Shtirliz"
+                                          senderName: "Vera"
         )
         //messageService.sendMessage(message: newMessage)
         reference.addDocument(data: newMessage.toDict)
@@ -204,11 +224,46 @@ class ConversationViewController: UIViewController{
             }
         }
     }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    private func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        switch type {
+        case .insert:
+            if let indexPath = newIndexPath {
+                tableView.insertRows(at: [(indexPath as IndexPath)], with: .automatic)
+            }
+        case .update:
+            if let indexPath = indexPath {
+                let message = messageFetchedResultsController?.object(at: indexPath as IndexPath) as! Message
+                let cell = tableView.cellForRow(at: indexPath as IndexPath)
+                cell?.textLabel?.text = message.content
+            }
+        case .move:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [(indexPath as IndexPath)], with: .automatic)
+            }
+            if let newIndexPath = newIndexPath {
+                tableView.insertRows(at: [(newIndexPath as IndexPath)], with: .automatic)
+            }
+        case .delete:
+            if let indexPath = indexPath {
+                tableView.deleteRows(at: [(indexPath as IndexPath)], with: .automatic)
+            }
+        @unknown default: break
+        }
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
+    }
 }
 
 extension ConversationViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        messageList.count
+        messageFetchedResultsController?.fetchedObjects?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -247,6 +302,7 @@ extension ConversationViewController : UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
+    
 }
 
 

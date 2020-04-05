@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import Firebase
 
 class StorageManager{
     
@@ -26,22 +27,18 @@ class StorageManager{
         return NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)!
     }
     
-    func fetchRequest(entityName: String, keyForSort: String) -> NSFetchRequest<NSFetchRequestResult>{
+    func fetchRequest(entityName: String, sortDescriptor: Array <NSSortDescriptor>, predicate: NSPredicate?) -> NSFetchRequest<NSFetchRequestResult>{
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-        let sortDescriptor = NSSortDescriptor(key: keyForSort, ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchRequest.sortDescriptors = sortDescriptor
+        fetchRequest.fetchBatchSize = 10
         return fetchRequest
     }
     
-    // var fetchedResultsController = instance.fetchedResultsController(entityName: "User", keyForSort: "name")
-    // Fetched Results Controller for Entity Name
-    /*func fetchedResultsController(entityName: String, keyForSort: String) -> NSFetchedResultsController<NSFetchRequestResult> {
-     let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-     let sortDescriptor = NSSortDescriptor(key: keyForSort, ascending: true)
-     fetchRequest.sortDescriptors = [sortDescriptor]
-     let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataManager.instance.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
-     return fetchedResultsController
-     }*/
+    func fetchedResultsController(entityName: String, sortDescriptor: Array <NSSortDescriptor>, sectionNameKeyPath: String?, predicate: NSPredicate?, cacheName: String?) -> NSFetchedResultsController<NSFetchRequestResult> {
+        let fr = fetchRequest(entityName: entityName, sortDescriptor: sortDescriptor, predicate: predicate)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fr, managedObjectContext: StorageManager.instance.managedObjectContext, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
+        return fetchedResultsController
+    }
     
     // MARK: - Core Data stack
     lazy var applicationDocumentsDirectory: NSURL = {
@@ -106,8 +103,10 @@ class StorageManager{
             }
         }
     }
+
 }
 
+//MARK: ProfileManager
 extension StorageManager: StorageProtocol{
     func activate(completion: @escaping (Bool) -> Void) {
         if (StorageManager.managedObject.name == nil){
@@ -124,7 +123,7 @@ extension StorageManager: StorageProtocol{
     }
     
     func load(completion: @escaping (User?) -> Void) {
-        let fetchRequest = StorageManager.instance.fetchRequest(entityName: "User", keyForSort: "name")
+        let fetchRequest = StorageManager.instance.fetchRequest(entityName: "User", sortDescriptor: [NSSortDescriptor(key: "name", ascending: true)], predicate: nil)
         let userList = try? StorageManager.instance.managedObjectContext.fetch(fetchRequest)
         completion(userList?.first as? User)
     }
@@ -138,4 +137,10 @@ extension StorageManager: StorageProtocol{
         StorageManager.instance.saveContext()
         completion(true)
     }
+     
+}
+
+//MARK: ChannelManager
+extension StorageManager{
+    
 }
