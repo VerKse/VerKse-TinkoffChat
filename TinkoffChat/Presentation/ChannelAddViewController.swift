@@ -133,7 +133,7 @@ class ChannelAddViewController: UIViewController {
         // MARK: добавить обработку ошибки
         let id = Int(Date.init(timeIntervalSinceNow: 0).timeIntervalSince1970)+(UIDevice.current.identifierForVendor!.hashValue)
         let date = Date.init(timeIntervalSinceNow: 0)
-        let newChannel = Channel(identifier: String(id),
+        let newChannel = ChannelOld(identifier: String(id),
                                  name: stringFromAny(self.nameTextField.text),
                                  lastMessage: stringFromAny(self.messageTextField.text),
                                  lastActivity: date)
@@ -144,7 +144,7 @@ class ChannelAddViewController: UIViewController {
         let newMessage = MessageCellModel(content: stringFromAny(self.messageTextField.text),
                                           created: date,
                                           senderId: String(UIDevice.current.identifierForVendor!.hashValue),
-                                          senderName: "Shtirliz")
+                                          senderName: "Vera")
         let messegeReference: CollectionReference = {
             return db.collection("channels").document(String(id)).collection("messages")
         }()

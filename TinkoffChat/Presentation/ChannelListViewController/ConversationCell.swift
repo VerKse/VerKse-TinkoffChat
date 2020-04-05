@@ -26,6 +26,7 @@ class ConversationCell: UITableViewCell {
         textlable.textColor = .blueGrey900
         return textlable
     }()
+    
     var messageLable: UILabel = {
         var textlable = UILabel()
         textlable.font = .systemFont(ofSize: 16)
@@ -33,6 +34,7 @@ class ConversationCell: UITableViewCell {
         textlable.textColor = .blueGrey500
         return textlable
     }()
+    
     var dateLable: UILabel = {
         var textlable = UILabel()
         textlable.translatesAutoresizingMaskIntoConstraints = false
@@ -42,6 +44,8 @@ class ConversationCell: UITableViewCell {
         return textlable
     }()
     
+    var identifierLable = UILabel()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.addSubview(nameLable)
@@ -50,11 +54,11 @@ class ConversationCell: UITableViewCell {
         self.addSubview(avatarImg)
         
         NSLayoutConstraint.activate([
-            avatarImg.topAnchor.constraint(equalTo: self.topAnchor, constant: 15),
-            avatarImg.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 15),
-            avatarImg.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -15),
+            avatarImg.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             avatarImg.heightAnchor.constraint(equalTo: self.widthAnchor, multiplier: 0.15),
             avatarImg.widthAnchor.constraint(equalTo: avatarImg.heightAnchor),
+            avatarImg.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 15),
+            avatarImg.topAnchor.constraint(greaterThanOrEqualTo: self.topAnchor, constant: 15),
             
             nameLable.topAnchor.constraint(equalTo: avatarImg.topAnchor),
             nameLable.leftAnchor.constraint(equalTo: avatarImg.rightAnchor, constant: 10),

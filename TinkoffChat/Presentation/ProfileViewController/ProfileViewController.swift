@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 class ProfileViewController: UIViewController {
-    let coreDataStack = StorageManager()
+    //let coreDataStack = StorageManager()
     
     var user: User?
     
@@ -131,15 +131,14 @@ class ProfileViewController: UIViewController {
     let failAlert = UIAlertController(title: "Изменения не успешно сохранены",
                                       message: "Абсолютно не успешно.",
                                       preferredStyle: .alert)
-    
-    
+
     var ready: Bool = false
     //MARK: Properties
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        coreDataStack.activate(completion: { _ in })
-        coreDataStack.load { (user) in
+        StorageManager.instance.activate(completion: { _ in })
+        StorageManager.instance.load { (user) in
             self.user = user
         }
         
@@ -195,14 +194,13 @@ class ProfileViewController: UIViewController {
         //MARK: backView: nameLable + aboutText
         NSLayoutConstraint.activate([
             backView.topAnchor.constraint(equalTo: avatarImg.bottomAnchor, constant: -10),
-            backView.bottomAnchor.constraint(equalTo: aboutText.bottomAnchor, constant: 30),
+            backView.bottomAnchor.constraint(equalTo: aboutText.bottomAnchor, constant: 50),
             backView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             backView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier:0.9),
             
             nameLable.topAnchor.constraint(equalTo: backView.topAnchor, constant: 40),
             
             aboutText.centerXAnchor.constraint(equalTo: backView.centerXAnchor),
-            aboutText.widthAnchor.constraint(equalTo: backView.widthAnchor, multiplier: 0.8),
             aboutText.topAnchor.constraint(equalTo: nameLable.bottomAnchor, constant: 20),
             
             nameLable.centerXAnchor.constraint(equalTo: aboutText.centerXAnchor),
@@ -402,7 +400,7 @@ class ProfileViewController: UIViewController {
         self.user?.about = editAboutField.text
         self.user?.avatar = editAvatarField.text
         
-        coreDataStack.save(profile: self.user!, completion: { _ in })
+        StorageManager.instance.save(profile: self.user!, completion: { _ in })
         return true
     }
     
