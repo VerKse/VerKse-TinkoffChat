@@ -263,7 +263,7 @@
 			path = CoreLayer;
 			sourceTree = "<group>";
 		};
-		AA6B5829242F82F100AEB30B /* picture */ = {
+		AA6B5829242F82F100AEB30B /* Pictures */ = {
 			isa = PBXGroup;
 			children = (
 				AA0D6D1D2430B26C002DCAE0 /* cancelWhite.png */,
@@ -278,10 +278,10 @@
 				AACA7A15242E71EB0003B750 /* penWhite.png */,
 				AADE9E90240A696500557835 /* userMainColor_old.png */,
 			);
-			path = picture;
+			path = Pictures;
 			sourceTree = "<group>";
 		};
-		AA6B582A242F82FE00AEB30B /* fonts */ = {
+		AA6B582A242F82FE00AEB30B /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
 				AADE9E89240A615300557835 /* Play-Bold.ttf */,
@@ -290,7 +290,7 @@
 				AADE9E8C240A616D00557835 /* RobotoSlab-Light.ttf */,
 				AADE9E8D240A616D00557835 /* RobotoSlab-Thin.ttf */,
 			);
-			path = fonts;
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		AA8BBF0A23F9417200D754AE = {
@@ -300,8 +300,8 @@
 				AA8BBF2F23F9417700D754AE /* TinkoffChatTests */,
 				AA8BBF1423F9417200D754AE /* Products */,
 				35CF43266A016618E6162454 /* Pods */,
-				AA6B582A242F82FE00AEB30B /* fonts */,
-				AA6B5829242F82F100AEB30B /* picture */,
+				AA6B582A242F82FE00AEB30B /* Fonts */,
+				AA6B5829242F82F100AEB30B /* Pictures */,
 				117E568E9E332531ED7950FA /* Frameworks */,
 			);
 			sourceTree = "<group>";

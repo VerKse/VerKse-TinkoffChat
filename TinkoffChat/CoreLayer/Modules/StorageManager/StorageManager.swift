@@ -103,7 +103,6 @@ class StorageManager{
             }
         }
     }
-
 }
 
 //MARK: ProfileManager
