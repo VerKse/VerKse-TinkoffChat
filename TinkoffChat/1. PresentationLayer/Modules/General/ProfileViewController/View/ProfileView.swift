@@ -1,17 +1,15 @@
 //
-//  ProfileViewController.swift
+//  ProfileView.swift
 //  TinkoffChat
 //
-//  Created by Vera on 01.03.2020.
+//  Created by Vera on 12.04.2020.
 //  Copyright © 2020 Vera. All rights reserved.
 //
 
+import Foundation
 import UIKit
-import CoreData
 
-class ProfileViewController: UIViewController {
-    
-    var user: User?
+class ProfileView: UIView{
     
     lazy var avatarImg: UIImageView = {
         var image = UIImageView()
@@ -56,7 +54,6 @@ class ProfileViewController: UIViewController {
         button.setTitleColor(.mainColor, for: .selected)
         button.titleLabel?.adjustsFontSizeToFitWidth = true;
         button.setBackgroundColor(color: .mainLightColor, forState: .disabled)
-        button.addTarget(self, action: #selector(editButtonAction(_:)), for: .touchUpInside)
         button.setTitle("EDIT", for: .normal)
         return button
     }()
@@ -77,7 +74,6 @@ class ProfileViewController: UIViewController {
         button.setTitleColor(.mainColor, for: .selected)
         button.titleLabel?.adjustsFontSizeToFitWidth = true;
         button.setBackgroundColor(color: .mainLightColor, forState: .disabled)
-        button.addTarget(self, action: #selector(saveButtonAction(_:)), for: .touchUpInside)
         button.setTitle("SAVE", for: .normal)
         return button
     }()
@@ -96,7 +92,6 @@ class ProfileViewController: UIViewController {
     
     lazy var backButton: UIButton = {
         var button = UIButton()
-        button.addTarget(self, action: #selector(backButtonAction(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 15
         button.backgroundColor = .mainColor
@@ -108,7 +103,6 @@ class ProfileViewController: UIViewController {
     
     lazy var backEditButton: UIButton = {
         var button = UIButton()
-        button.addTarget(self, action: #selector(backButtonEditAction(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 15
         button.backgroundColor = .mainColor
@@ -148,74 +142,29 @@ class ProfileViewController: UIViewController {
         return editAvatarField
     }()
     
-    lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
-    
-    let sucsessAlert = UIAlertController(title: "Изменения успешно сохранены",
-                                         message: "Абсолютно успешно.",
-                                         preferredStyle: .alert)
-    let failAlert = UIAlertController(title: "Изменения не успешно сохранены",
-                                      message: "Абсолютно не успешно.",
-                                      preferredStyle: .alert)
-
-    var ready: Bool = false
-    //MARK: Properties
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        StorageManager.instance.activate(completion: { _ in })
-        StorageManager.instance.load { (user) in
-            self.user = user
-        }
-        
-        nameLable.text = user?.name
-        aboutText.text = user?.about
-        avatarImg.image = UIImage.init(named: user?.avatar ?? "userMainColor.png")
-        
-        editNameField.text = user?.name
-        editAboutField.text = user?.about
-        editAvatarField.text = user?.avatar
+    override func awakeFromNib() {
+        super.awakeFromNib()
         
         regularMode()
         backView.addSubview(nameLable)
         backView.addSubview(aboutText)
-        view.addSubview(editButton)
-        view.addSubview(saveButton)
-        view.addSubview(backView)
-        view.addSubview(avatarImg)
-        view.addSubview(backButton)
-        view.addSubview(editAvatarField)
-        view.addSubview(editNameField)
-        view.addSubview(editAboutField)
-        view.addSubview(backEditButton)
-        view.backgroundColor = .white
-        
-        
-        //MARK: sucsessAlert
-        sucsessAlert.addAction(UIAlertAction(title: "👌", style: .default,
-                                             handler: {action in self.regularMode()
-        }))
-        
-        //MARK: failAlert
-        failAlert.addAction(UIAlertAction(title: "👌", style: .default,
-                                          handler: {action in
-                                            self.regularMode()
-                                            return
-        }))
-        
-        //MARK: spinner
-        spinner.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(spinner)
-        spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        spinner.isHidden = true
-        spinner.backgroundColor = UIColor.black.withAlphaComponent(0.75)
+        self.addSubview(editButton)
+        self.addSubview(saveButton)
+        self.addSubview(backView)
+        self.addSubview(avatarImg)
+        self.addSubview(backButton)
+        self.addSubview(editAvatarField)
+        self.addSubview(editNameField)
+        self.addSubview(editAboutField)
+        self.addSubview(backEditButton)
+        self.backgroundColor = .white
         
         //MARK: avatarStack + avatarImg
-        view.sendSubviewToBack(avatarImg)
+        self.sendSubviewToBack(avatarImg)
         NSLayoutConstraint.activate([
-            avatarImg.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            avatarImg.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            avatarImg.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.27),
+            avatarImg.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 40),
+            avatarImg.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            avatarImg.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.27),
             avatarImg.widthAnchor.constraint(equalTo: avatarImg.heightAnchor),
         ])
         
@@ -224,8 +173,8 @@ class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             backView.topAnchor.constraint(equalTo: avatarImg.bottomAnchor, constant: -10),
             backView.bottomAnchor.constraint(equalTo: aboutText.bottomAnchor, constant: 50),
-            backView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            backView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier:0.9),
+            backView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            backView.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier:0.9),
             
             nameLable.topAnchor.constraint(equalTo: backView.topAnchor, constant: 40),
             
@@ -238,7 +187,7 @@ class ProfileViewController: UIViewController {
         ])
         
         // MARK: editButton
-        view.bringSubviewToFront(editButton)
+        self.bringSubviewToFront(editButton)
         NSLayoutConstraint.activate([
             editButton.centerYAnchor.constraint(equalTo: backView.bottomAnchor),
             editButton.centerXAnchor.constraint(equalTo: backView.centerXAnchor)
@@ -246,8 +195,8 @@ class ProfileViewController: UIViewController {
         
         //MARK: backButton
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            backButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
+            backButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 20),
+            backButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20),
             backButton.widthAnchor.constraint(equalToConstant: 30),
             backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
@@ -255,14 +204,14 @@ class ProfileViewController: UIViewController {
         //MARK: backEditButton
         NSLayoutConstraint.activate([
             backEditButton.topAnchor.constraint(equalTo: backButton.topAnchor),
-            backEditButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            backEditButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20),
             backEditButton.widthAnchor.constraint(equalToConstant: 30),
             backEditButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
         
         NSLayoutConstraint.activate([
-            editAvatarField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            editAboutField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
+            editAvatarField.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20),
+            editAboutField.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20),
             
             editAvatarField.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 50),
             editNameField.topAnchor.constraint(equalTo: editAvatarField.bottomAnchor, constant: 20),
@@ -276,46 +225,56 @@ class ProfileViewController: UIViewController {
         ])
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if (ProcessInfo.processInfo.environment["UIVC_LIFESYCLE_LOGS"] == "consolePrint") {
-            print("Application moved from DISAPPEARED/DISAPPEARING to APPEARING : viewWillAppear")
-        }
+    
+    
+    func regularMode(){
+        
+        editNameField.isHidden = true
+        editAboutField.isHidden = true
+        editAvatarField.isHidden = true
+        saveButton.isHidden = true
+        editButton.isHidden = false
+        avatarImg.isHidden = false
+        nameLable.isHidden = false
+        aboutText.isHidden = false
+        editButton.isHidden = false
+        backView.isHidden = false
+        avatarImg.isHidden = false
+        editNameField.endEditing(true)
+        editAboutField.endEditing(true)
+        editAvatarField.endEditing(true)
+        backEditButton.isHidden = true
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        if (ProcessInfo.processInfo.environment["UIVC_LIFESYCLE_LOGS"] == "consolePrint") {
-            print("Application is about to layout its subviews: viewWillLayoutSubviews")
-        }
+    func editMode(){
+        saveButton.isHidden = false
+        editButton.isHidden = true
+        avatarImg.isHidden = true
+        nameLable.isHidden = true
+        aboutText.isHidden = true
+        editButton.isHidden = true
+        backView.isHidden = true
+        avatarImg.isHidden = true
+        editNameField.isHidden = false
+        editAboutField.isHidden = false
+        editAvatarField.isHidden = false
+        editNameField.endEditing(false)
+        editAboutField.endEditing(false)
+        editAvatarField.endEditing(false)
+        backEditButton.isHidden = false
+        editNameField.becomeFirstResponder()
+        editAboutField.becomeFirstResponder()
+        editAvatarField.becomeFirstResponder()
+        
+        NSLayoutConstraint.activate([
+            backButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 10),
+            backButton.leftAnchor.constraint(equalTo: editNameField.leftAnchor),
+            backButton.widthAnchor.constraint(equalToConstant: 30),
+            backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
+        ])
+        NSLayoutConstraint.activate([
+            saveButton.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            saveButton.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
     }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        if (ProcessInfo.processInfo.environment["UIVC$_LIFESYCLE_LOGS"] == "consolePrint") {
-            print("Application has just laid out its subviews: viewDidLayoutSubviews")
-        }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if (ProcessInfo.processInfo.environment["UIVC_LIFESYCLE_LOGS"] == "consolePrint") {
-            print("Application moved from APPEARING to APPEARED: viewDidAppear")
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if (ProcessInfo.processInfo.environment["UIVC_LIFESYCLE_LOGS"] == "consolePrint") {
-            print("Application moved from APPEARED/APPEARING to DISAPPEARING: viewWillDisappear")
-        }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        if (ProcessInfo.processInfo.environment["UIVC_LIFESYCLE_LOGS"] == "consolePrint") {
-            print("Application moved from DISAPPEARING to DISAPPEAR: viewDidDisappear")
-        }
-    }
-    
 }

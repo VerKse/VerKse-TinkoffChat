@@ -1,22 +1,29 @@
 //
-//  ChannelList+UITableViewDataSource.swift
+//  ChannelListTableViewDataSource.swift
 //  TinkoffChat
 //
-//  Created by Vera on 05.04.2020.
+//  Created by Vera on 12.04.2020.
 //  Copyright © 2020 Vera. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import CoreData
+import Firebase
 
-
-@available(iOS 13.0, *)
-extension ChannelListViewController : UITableViewDataSource {
+class TableViewDataSource: NSObject, UITableViewDataSource {
+    
+    lazy var frc: NSFetchedResultController<Channel> = {
+        return StorageManager.instance.fetchedResultsController(
+            entityName: "Channel",
+            sortDescriptor: [NSSortDescriptor(key: "isActive", ascending: true), NSSortDescriptor(key: "lastActivity", ascending: true)],
+            sectionNameKeyPath: "isActive",
+            predicate: nil,
+            cacheName: "channelCache")
+    }()
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return channelFetchedResultsController.fetchedObjects?.count ?? 0
-
+        return frc.fetchedObjects?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -38,7 +45,7 @@ extension ChannelListViewController : UITableViewDataSource {
             break;
         }
         
-        channel = channelFetchedResultsController.object(at: indexPath) as! Channel
+        channel = frc.object(at: indexPath) as! Channel
         cell.nameLable.text = channel.name
         cell.identifierLable.text = channel.identifier
         
@@ -68,7 +75,7 @@ extension ChannelListViewController : UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if let sections = channelFetchedResultsController.sections?.count {
+        if let sections = frc.sections?.count {
             return sections
         } else {return 0}
     }
@@ -86,7 +93,7 @@ extension ChannelListViewController : UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
         if editingStyle == .delete {
-            let managedObject = channelFetchedResultsController.object(at: indexPath as IndexPath) as! Channel
+            let managedObject = frc.object(at: indexPath as IndexPath) as! Channel
             deleteChannel(withIdentifier: managedObject.identifier!)
             StorageManager.instance.managedObjectContext.delete(managedObject)
             StorageManager.instance.saveContext()
