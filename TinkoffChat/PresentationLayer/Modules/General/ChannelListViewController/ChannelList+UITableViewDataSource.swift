@@ -12,7 +12,7 @@ import CoreData
 
 
 @available(iOS 13.0, *)
-extension ChannelList : UITableViewDataSource {
+extension ChannelListViewController : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return channelFetchedResultsController.fetchedObjects?.count ?? 0
@@ -27,7 +27,7 @@ extension ChannelList : UITableViewDataSource {
             return UITableViewCell()
         }
         
-        var channel = Channel()
+        var channel = Channel(context: StorageManager.instance.persistentContainer.viewContext)
         
         switch indexPath.section {
         case 0:

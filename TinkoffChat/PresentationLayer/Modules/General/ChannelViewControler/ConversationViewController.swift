@@ -12,7 +12,6 @@ import CoreData
 
 class ConversationViewController: UIViewController, NSFetchedResultsControllerDelegate{
     
-    var channel: ChannelOld?
     var channelIdentifier: String?
     var channelName: String?
     var messageFetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?

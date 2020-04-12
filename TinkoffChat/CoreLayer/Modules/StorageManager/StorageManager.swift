@@ -1,8 +1,8 @@
 //
-//  CoreDataManager.swift
+//  StorageManager.swift
 //  TinkoffChat
 //
-//  Created by Vera on 28.03.2020.
+//  Created by Vera on 12.04.2020.
 //  Copyright © 2020 Vera. All rights reserved.
 //
 

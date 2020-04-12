@@ -10,18 +10,17 @@ import UIKit
 import CoreData
 
 class ProfileViewController: UIViewController {
-    //let coreDataStack = StorageManager()
     
     var user: User?
     
-    private lazy var avatarImg: UIImageView = {
+    lazy var avatarImg: UIImageView = {
         var image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
         image.image = UIImage.init(named: "userMainColor.png")
         return image
     }()
     
-    private lazy var nameLable: UILabel = {
+    lazy var nameLable: UILabel = {
         var lable = UILabel()
         lable.translatesAutoresizingMaskIntoConstraints = false
         lable.text = ""
@@ -30,7 +29,7 @@ class ProfileViewController: UIViewController {
         return lable
     }()
     
-    private lazy var aboutText: UITextView = {
+    lazy var aboutText: UITextView = {
         var textView = UITextView()
         textView.font = UIFont.systemFont(ofSize: 18)
         textView.isScrollEnabled = false
@@ -41,7 +40,7 @@ class ProfileViewController: UIViewController {
         return textView
     }()
     
-    private lazy var editButton: UIButton = {
+    lazy var editButton: UIButton = {
         var button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -62,7 +61,7 @@ class ProfileViewController: UIViewController {
         return button
     }()
     
-    private lazy var saveButton: UIButton = {
+    lazy var saveButton: UIButton = {
         var button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -83,7 +82,7 @@ class ProfileViewController: UIViewController {
         return button
     }()
     
-    private lazy var backView: UIView = {
+    lazy var backView: UIView = {
         var view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .white
@@ -95,7 +94,7 @@ class ProfileViewController: UIViewController {
         return view
     }()
     
-    private lazy var backButton: UIButton = {
+    lazy var backButton: UIButton = {
         var button = UIButton()
         button.addTarget(self, action: #selector(backButtonAction(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -107,7 +106,7 @@ class ProfileViewController: UIViewController {
         return button
     }()
     
-    private lazy var backEditButton: UIButton = {
+    lazy var backEditButton: UIButton = {
         var button = UIButton()
         button.addTarget(self, action: #selector(backButtonEditAction(_:)), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -119,11 +118,37 @@ class ProfileViewController: UIViewController {
         return button
     }()
     
-    private lazy var editNameField = UITextField()
-    private lazy var editAboutField = UITextField()
-    private lazy var editAvatarField = UITextField()
+    lazy var editNameField: UITextField = {
+        var editNameField = UITextField()
+        editNameField.backgroundColor = .mainLightColor
+        editNameField.text = nameLable.text
+        editNameField.font = UIFont.boldSystemFont(ofSize: 18)
+        editNameField.textColor = .mainColor
+        editNameField.translatesAutoresizingMaskIntoConstraints = false
+        return editNameField
+    }()
     
-    private lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
+    lazy var editAboutField: UITextField = {
+        var editAboutField = UITextField()
+        editAboutField.backgroundColor = .mainLightColor
+        editAboutField.text = aboutText.text
+        editAboutField.font = UIFont.systemFont(ofSize: 18)
+        editAboutField.textColor = .mainColor
+        editAboutField.translatesAutoresizingMaskIntoConstraints = false
+        return editAboutField
+    }()
+    
+    lazy var editAvatarField: UITextField = {
+        var editAvatarField = UITextField()
+        editAvatarField.text = "userMainColor.png"
+        editAvatarField.font = UIFont.boldSystemFont(ofSize: 18)
+        editAvatarField.textColor = .mainColor
+        editAvatarField.backgroundColor = .mainLightColor
+        editAvatarField.translatesAutoresizingMaskIntoConstraints = false
+        return editAvatarField
+    }()
+    
+    lazy var spinner = UIActivityIndicatorView(style: .whiteLarge)
     
     let sucsessAlert = UIAlertController(title: "Изменения успешно сохранены",
                                          message: "Абсолютно успешно.",
@@ -158,6 +183,10 @@ class ProfileViewController: UIViewController {
         view.addSubview(backView)
         view.addSubview(avatarImg)
         view.addSubview(backButton)
+        view.addSubview(editAvatarField)
+        view.addSubview(editNameField)
+        view.addSubview(editAboutField)
+        view.addSubview(backEditButton)
         view.backgroundColor = .white
         
         
@@ -224,38 +253,12 @@ class ProfileViewController: UIViewController {
         ])
         
         //MARK: backEditButton
-        view.addSubview(backEditButton)
         NSLayoutConstraint.activate([
             backEditButton.topAnchor.constraint(equalTo: backButton.topAnchor),
             backEditButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
             backEditButton.widthAnchor.constraint(equalToConstant: 30),
             backEditButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
         ])
-        
-        //MARK: editAvatarField
-        view.addSubview(editAvatarField)
-        editAvatarField.text = "userMainColor.png"
-        editAvatarField.font = UIFont.boldSystemFont(ofSize: 18)
-        editAvatarField.textColor = .mainColor
-        editAvatarField.backgroundColor = .mainLightColor
-        editAvatarField.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-        //MARK: editNameField
-        view.addSubview(editNameField)
-        editNameField.backgroundColor = .mainLightColor
-        editNameField.text = nameLable.text
-        editNameField.font = UIFont.boldSystemFont(ofSize: 18)
-        editNameField.textColor = .mainColor
-        editNameField.translatesAutoresizingMaskIntoConstraints = false
-        
-        //MARK: editAboutField
-        view.addSubview(editAboutField)
-        editAboutField.backgroundColor = .mainLightColor
-        editAboutField.text = aboutText.text
-        editAboutField.font = UIFont.systemFont(ofSize: 18)
-        editAboutField.textColor = .mainColor
-        editAboutField.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             editAvatarField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
@@ -272,138 +275,6 @@ class ProfileViewController: UIViewController {
             editAboutField.widthAnchor.constraint(equalTo: aboutText.widthAnchor)
         ])
     }
-    
-    func regularMode(){
-        
-        editNameField.isHidden = true
-        editAboutField.isHidden = true
-        editAvatarField.isHidden = true
-        saveButton.isHidden = true
-        editButton.isHidden = false
-        avatarImg.isHidden = false
-        nameLable.isHidden = false
-        aboutText.isHidden = false
-        editButton.isHidden = false
-        backView.isHidden = false
-        avatarImg.isHidden = false
-        editNameField.endEditing(true)
-        editAboutField.endEditing(true)
-        editAvatarField.endEditing(true)
-        backEditButton.isHidden = true
-    }
-    
-    func editMode(){
-        saveButton.isHidden = false
-        editButton.isHidden = true
-        avatarImg.isHidden = true
-        nameLable.isHidden = true
-        aboutText.isHidden = true
-        editButton.isHidden = true
-        backView.isHidden = true
-        avatarImg.isHidden = true
-        editNameField.isHidden = false
-        editAboutField.isHidden = false
-        editAvatarField.isHidden = false
-        editNameField.endEditing(false)
-        editAboutField.endEditing(false)
-        editAvatarField.endEditing(false)
-        backEditButton.isHidden = false
-        editNameField.becomeFirstResponder()
-        editAboutField.becomeFirstResponder()
-        editAvatarField.becomeFirstResponder()
-
-        
-        NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
-            backButton.leftAnchor.constraint(equalTo: editNameField.leftAnchor),
-            backButton.widthAnchor.constraint(equalToConstant: 30),
-            backButton.heightAnchor.constraint(equalTo:backButton.widthAnchor)
-        ])
-        NSLayoutConstraint.activate([
-            saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            saveButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
-    }
-    
-    //MARK: Actions
-    @objc func backButtonAction(_ sender : UIButton) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @objc func backButtonEditAction(_ sender : UIButton) {
-        regularMode()
-    }
-    
-    @objc func editButtonAction(_ sender: UIButton!) {
-        
-        let imagePicker = UIImagePickerController()
-        
-        let actionSheet = UIAlertController(title: "", message: "Настройте профиль", preferredStyle: UIAlertController.Style.actionSheet)
-        
-        let galleryAction = UIAlertAction(title: "Выбрать фото из галереи", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
-            imagePicker.sourceType = .photoLibrary
-            self.present(imagePicker, animated: true, completion: nil)
-        })
-        
-        let cameraAction = UIAlertAction(title: "Сделать фото", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
-            imagePicker.sourceType = .camera
-            self.present(imagePicker, animated: true, completion: nil)
-        })
-        
-        let editAction = UIAlertAction(title: "Редактировать описание", style: UIAlertAction.Style.default, handler: { (action:UIAlertAction) in
-            
-            self.editMode()
-        })
-        
-        let closeAction = UIAlertAction(title: "Закрыть", style: UIAlertAction.Style.cancel){ (Action) -> Void in }
-        
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            actionSheet.addAction(cameraAction)
-        }
-        
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
-            actionSheet.addAction(galleryAction)
-        }
-        
-        actionSheet.addAction(editAction)
-        actionSheet.addAction(closeAction)
-        
-        present(actionSheet, animated: true, completion: nil)
-    }
-    
-    @objc func saveButtonAction(_ sender: UIButton!) {
-        if (saveUser()) {
-            nameLable.text = user?.name
-            aboutText.text = user?.about
-            avatarImg.image = UIImage.init(named: user?.avatar ?? "userMainColor.png")
-            
-            self.present(self.sucsessAlert, animated: true)
-        } else {
-            self.failAlert.addAction(UIAlertAction(title: "Ок", style: .default,
-                                                   handler: {action in self.dismiss(animated: true, completion: nil)
-                                                    
-            }))
-            self.present(self.failAlert, animated: true)
-            return
-        }
-    }
-    
-    func saveUser() -> Bool {
-        if editNameField.text!.isEmpty {
-            let alert = UIAlertController(title: "Validation error", message: "Input the name of the User!", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-            return false
-        }
-        
-        self.user?.name = editNameField.text
-        self.user?.about = editAboutField.text
-        self.user?.avatar = editAvatarField.text
-        
-        StorageManager.instance.save(profile: self.user!, completion: { _ in })
-        return true
-    }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -446,6 +317,5 @@ class ProfileViewController: UIViewController {
             print("Application moved from DISAPPEARING to DISAPPEAR: viewDidDisappear")
         }
     }
-    
     
 }

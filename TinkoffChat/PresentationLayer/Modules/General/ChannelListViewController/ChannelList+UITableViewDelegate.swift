@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 @available(iOS 13.0, *)
-extension ChannelList: UITableViewDelegate {
+extension ChannelListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {

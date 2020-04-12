@@ -12,7 +12,7 @@ import CoreData
 
 
 @available(iOS 13.0, *)
-class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
+class ChannelListViewController: UIViewController, NSFetchedResultsControllerDelegate{
     
     lazy var db = Firestore.firestore()
     lazy var reference = db.collection("channels")
@@ -86,13 +86,15 @@ class ChannelList: UIViewController, NSFetchedResultsControllerDelegate{
         channelFetchedResultsController.delegate = self
     
         channelService.listener(completion: { _ in            
-            NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "channelCache")
-            do{
-                try self.channelFetchedResultsController.performFetch()
-            } catch {
-                print("Error: \(error))")
-            }
+            //NSFetchedResultsController<NSFetchRequestResult>.deleteCache(withName: "channelCache")
+            
         })
+        
+        do{
+            try self.channelFetchedResultsController.performFetch()
+        } catch {
+            print("Error: \(error))")
+        }
         
         //MARK: bottomStack
         bottomView.addSubview(profileButton)
