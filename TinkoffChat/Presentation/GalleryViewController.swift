@@ -13,13 +13,12 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
     
     let identifier = String(describing: GalleryCollectionCell.self)
     let activityIndicator  = UIActivityIndicatorView(style: .gray)
-    var imagesList = [Question]()
     var images = [Answer]()
+    var itemsCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         images.removeAll()
-        imagesList.removeAll()
         
         collectionView?.backgroundColor = .white
         collectionView.register(GalleryCollectionCell.self, forCellWithReuseIdentifier: identifier)
@@ -32,18 +31,9 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
         let session = URLSession.shared
         
         //запускаем таску на получение списка изображений
-        
-        //обновляем коллекцию
-        
-        //переходим в бэк и асинхронно подгружаем данные новой таской
-        
-        DispatchQueue.main.async {
-            self.collectionView.reloadData()
-        }
-        
         if let url = url {
             let request = URLRequest(url: url)
-            let task = session.dataTask(with: request) {(data, response, error) in
+            let countTask = session.dataTask(with: request) {(data, response, error) in
                 if let error = error {
                     let failAlert = UIAlertController(title: "При загрузке данных что-то пошло не так 🤯",
                                                       message: "Error \(error): \(error.localizedDescription)",
@@ -57,28 +47,42 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
                     print(error)
                 } else if let data = data {
                     let pixabayResponse = try? JSONDecoder().decode(PixabayResponse.self, from: data)
-                    if (pixabayResponse?.totalHits != 0 )
-                    {
-                        
-                        let firstItem = pixabayResponse?.hits.first
-                        print("Image id: \(String(describing: firstItem?.id))")
-                        if let firstItem = firstItem {
-                            let localRequest = URLRequest(url: URL(string: firstItem.webformatURL! )!)
-                            let localTask = session.dataTask(with: localRequest) {(data, response, error) in
-                                if let data = data {
-                                    self.images.append(Answer(id: firstItem.id, webFormatImage: UIImage(data: data)))
-                                }
-                            }
-                            localTask.resume()
-                        }
-                        DispatchQueue.global(qos: .background).async {
+                    self.itemsCount = pixabayResponse?.totalHits ?? 0
+                }
+            }
+            countTask.resume()
+            
+            DispatchQueue.global(qos: .background).async {
+                let loadingTask = session.dataTask(with: request) {(data, response, error) in
+                    if let error = error {
+                        let failAlert = UIAlertController(title: "При загрузке данных что-то пошло не так 🤯",
+                                                          message: "Error \(error): \(error.localizedDescription)",
+                            preferredStyle: .alert)
+                        failAlert.addAction(UIAlertAction(title: "Закрыть галлерею", style: .default,
+                                                          handler: {action in
+                                                            self.dismiss(animated: true, completion: nil)
+                                                            return
+                        }))
+                        self.present(failAlert, animated: true)
+                        print(error)
+                    } else if let data = data {
+                        let pixabayResponse = try? JSONDecoder().decode(PixabayResponse.self, from: data)
+                        if (pixabayResponse?.totalHits != 0 )
+                        {
                             if let pixabayResponse = pixabayResponse {
                                 for image in pixabayResponse.hits {
                                     self.images.append(Answer(id: image.id, webFormatImage: UIImage()))
+                                    
+                                    let localRequest = URLRequest(url: URL(string: image.webformatURL! )!)
+                                    let localTask = session.dataTask(with: localRequest) {(data, response, error) in
+                                        if let data = data {
+                                            self.images.append(Answer(id: image.id, webFormatImage: UIImage(data: data)))
+                                        }
+                                    }
+                                    localTask.resume()
                                 }
                             }
                         }
-                        
                     } else {
                         let zeroAlert = UIAlertController(title: "Что-то не так с запросом",
                                                           message: "Не удалось подгрузить ни одной картинки.",
@@ -91,20 +95,29 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
                         self.present(zeroAlert, animated: true)
                     }
                 }
+                loadingTask.resume()
             }
-            task.resume()
         }
+        
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+        
         activityIndicator.stopAnimating()
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
+        return itemsCount
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! GalleryCollectionCell
-        cell.imageView.image = images[indexPath.row].webFormatImage
+        if  (indexPath.row >= images.count) {
+            cell.imageView.image = UIImage.init(named: "placeHolder.png")
+        } else {
+            cell.imageView.image = images[indexPath.row].webFormatImage
+        }
         let singleTap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(chooseAvatarAction(_:)))
         singleTap.numberOfTouchesRequired = 1
         cell.imageView.addGestureRecognizer(singleTap)
