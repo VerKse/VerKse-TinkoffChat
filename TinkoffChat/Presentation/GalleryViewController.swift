@@ -30,7 +30,6 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
         let url = URL(string: urlString)
         let session = URLSession.shared
         
-        //запускаем таску на получение списка изображений
         if let url = url {
             let request = URLRequest(url: url)
             let countTask = session.dataTask(with: request) {(data, response, error) in
@@ -48,6 +47,17 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
                 } else if let data = data {
                     let pixabayResponse = try? JSONDecoder().decode(PixabayResponse.self, from: data)
                     self.itemsCount = pixabayResponse?.totalHits ?? 0
+                    if (self.itemsCount == 0){
+                        let zeroAlert = UIAlertController(title: "Что-то не так с запросом",
+                                                          message: "Не удалось подгрузить ни одной картинки.",
+                                                          preferredStyle: .alert)
+                        zeroAlert.addAction(UIAlertAction(title: "Закрыть галлерею", style: .default,
+                                                          handler: {action in
+                                                            self.dismiss(animated: true, completion: nil)
+                                                            return
+                        }))
+                        self.present(zeroAlert, animated: true)
+                    }
                 }
             }
             countTask.resume()
@@ -67,8 +77,6 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
                         print(error)
                     } else if let data = data {
                         let pixabayResponse = try? JSONDecoder().decode(PixabayResponse.self, from: data)
-                        if (pixabayResponse?.totalHits != 0 )
-                        {
                             if let pixabayResponse = pixabayResponse {
                                 for image in pixabayResponse.hits {
                                     self.images.append(Answer(id: image.id, webFormatImage: UIImage()))
@@ -83,17 +91,6 @@ class GalleryViewController: UICollectionViewController, UICollectionViewDelegat
                                 }
                             }
                         }
-                    } else {
-                        let zeroAlert = UIAlertController(title: "Что-то не так с запросом",
-                                                          message: "Не удалось подгрузить ни одной картинки.",
-                                                          preferredStyle: .alert)
-                        zeroAlert.addAction(UIAlertAction(title: "Закрыть галлерею", style: .default,
-                                                          handler: {action in
-                                                            self.dismiss(animated: true, completion: nil)
-                                                            return
-                        }))
-                        self.present(zeroAlert, animated: true)
-                    }
                 }
                 loadingTask.resume()
             }
