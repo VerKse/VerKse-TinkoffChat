@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ConversationViewController: UIViewController{
+class ConversationViewController: UIViewController, UIGestureRecognizerDelegate{
     
     var channel: Channel?
     
@@ -46,6 +46,7 @@ class ConversationViewController: UIViewController{
         messageView.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 15);
         messageView.isScrollEnabled = false
         messageView.isUserInteractionEnabled = true
+        messageView.delegate = self
         return messageView
     }()
     
@@ -55,11 +56,12 @@ class ConversationViewController: UIViewController{
         messageButton.addTarget(self, action: #selector(messageButtonAction(_:)), for: .touchUpInside)
         messageButton.translatesAutoresizingMaskIntoConstraints = false
         messageButton.layer.cornerRadius = 20
-        messageButton.backgroundColor = .mainColor
+        messageButton.backgroundColor = .mainLightColor
         messageButton.layer.opacity = 1
         messageButton.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        messageButton.setImage(UIImage.init(named: "backWhite.png"), for: .normal)
         messageButton.setImage(UIImage.init(named: "backWhite.png")?.rotate(radians: .pi/2), for: .normal)
-        
+        messageButton.isEnabled = false
         return messageButton
     }()
     
@@ -85,6 +87,8 @@ class ConversationViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let _ = CoatAnimation.init(viewController: self, view: view)
+        
         self.hideKeyboardWhenTappedAround()
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -108,7 +112,7 @@ class ConversationViewController: UIViewController{
                 let newMess = MessageCellModel(content: doc.data()["content"] as! String,
                                                created: date.dateValue(),
                                                senderId: stringFromAny(doc.data()["senderID"]),
-                                                senderName: stringFromAny(doc.data()["senderName"]))
+                                               senderName: stringFromAny(doc.data()["senderName"]))
                 self?.messageList.append(newMess)
             }
             
@@ -158,8 +162,6 @@ class ConversationViewController: UIViewController{
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: inputStack.topAnchor)
         ])
-        
-        
     }
     
     //MARK: Actions
@@ -181,9 +183,9 @@ class ConversationViewController: UIViewController{
                 view.frame.origin.y -= keyboardSize.height
             }
         }
-
+        
     }
-
+    
     @objc func keyboardWillHide(_ notification: Notification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if view.frame.origin.y != 0 {
@@ -204,14 +206,14 @@ extension ConversationViewController : UITableViewDataSource {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MessageCell else {
             return UITableViewCell()
-        
+            
         }
-/*      let messageLeftAlign = cell.inputMessText.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 10)
-        let messageRightAlign = cell.inputMessText.rightAnchor.constraint(equalTo: cell.rightAnchor, constant: -10)
-*/
+        /*      let messageLeftAlign = cell.inputMessText.leftAnchor.constraint(equalTo: cell.leftAnchor, constant: 10)
+         let messageRightAlign = cell.inputMessText.rightAnchor.constraint(equalTo: cell.rightAnchor, constant: -10)
+         */
         let message = messageList[indexPath.row]
         if (message.senderId == String(UIDevice.current.identifierForVendor!.hashValue)){
-
+            
             cell.senderNameLable.text = "me"
             cell.inputMessText.backgroundColor = UIColor.mainColor
         } else{
@@ -237,3 +239,31 @@ extension ConversationViewController : UITableViewDataSource {
 }
 
 
+extension ConversationViewController: UITextViewDelegate{
+
+    
+    func textViewDidChange(_ textView: UITextView) {
+        if (self.messageView.text == "") {
+                messageButtonAnimation(color: .mainLightColor)
+                self.messageButton.isEnabled = false
+        } else if (!self.messageButton.isEnabled){
+            messageButtonAnimation(color: .mainColor)
+            self.messageButton.isEnabled = true
+        }
+    }
+    
+    func messageButtonAnimation(color: UIColor){
+        UIView.animate(withDuration: 0.5, animations: {
+            self.messageButton.backgroundColor = color
+        })
+        UIView.animate(withDuration: 0.5, animations: {
+            self.messageButton.transform = .init(scaleX: 1.15, y: 1.15)
+        }, completion: { (completed) in
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.7, options: [], animations: {
+                self.messageButton.transform = .init(scaleX: 1, y: 1)
+            }, completion: nil)
+        })
+        
+        
+    }
+}

@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class ProfileViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class ProfileViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIGestureRecognizerDelegate {
     let coreDataStack = StorageManager()
     
     var user: User?
@@ -165,9 +165,27 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
     
     
     var ready: Bool = false
+    
+    var mainView: UIView = {
+        var view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .none
+        return view
+    }()
+    
     //MARK: Properties
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.addSubview(mainView)
+        NSLayoutConstraint.activate([
+            mainView.topAnchor.constraint(equalTo: view.topAnchor),
+            mainView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mainView.leftAnchor.constraint(equalTo: view.leftAnchor)
+        ])
+        
+        let _ = CoatAnimation.init(viewController: self, view: mainView)
         
         coreDataStack.activate(completion: { _ in })
         coreDataStack.load { (user) in
@@ -187,11 +205,11 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         regularMode()
         backView.addSubview(nameLable)
         backView.addSubview(aboutText)
-        view.addSubview(editButton)
-        view.addSubview(saveButton)
-        view.addSubview(backView)
-        view.addSubview(avatarImg)
-        view.addSubview(backButton)
+        mainView.addSubview(editButton)
+        mainView.addSubview(saveButton)
+        mainView.addSubview(backView)
+        mainView.addSubview(avatarImg)
+        mainView.addSubview(backButton)
         view.backgroundColor = .white
         
         
@@ -209,14 +227,14 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         
         //MARK: spinner
         spinner.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(spinner)
+        mainView.addSubview(spinner)
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         spinner.isHidden = true
         spinner.backgroundColor = UIColor.black.withAlphaComponent(0.75)
         
         //MARK: avatarImg
-        view.sendSubviewToBack(avatarImg)
+        mainView.sendSubviewToBack(avatarImg)
         NSLayoutConstraint.activate([
             avatarImg.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             avatarImg.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -243,7 +261,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         ])
         
         // MARK: editButton
-        view.bringSubviewToFront(editButton)
+        mainView.bringSubviewToFront(editButton)
         NSLayoutConstraint.activate([
             editButton.centerYAnchor.constraint(equalTo: backView.bottomAnchor),
             editButton.centerXAnchor.constraint(equalTo: backView.centerXAnchor)
@@ -258,7 +276,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         ])
         
         //MARK: backEditButton
-        view.addSubview(backEditButton)
+        mainView.addSubview(backEditButton)
         NSLayoutConstraint.activate([
             backEditButton.topAnchor.constraint(equalTo: backButton.topAnchor),
             backEditButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
@@ -267,7 +285,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         ])
         
         //MARK: editAvatarField
-        view.addSubview(editAvatarField)
+        mainView.addSubview(editAvatarField)
         editAvatarField.text = "userMainColor.png"
         editAvatarField.font = UIFont.boldSystemFont(ofSize: 18)
         editAvatarField.textColor = .mainColor
@@ -276,7 +294,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         
         
         //MARK: editNameField
-        view.addSubview(editNameField)
+        mainView.addSubview(editNameField)
         editNameField.backgroundColor = .mainLightColor
         editNameField.text = nameLable.text
         editNameField.font = UIFont.boldSystemFont(ofSize: 18)
@@ -284,7 +302,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         editNameField.translatesAutoresizingMaskIntoConstraints = false
         
         //MARK: editAboutField
-        view.addSubview(editAboutField)
+        mainView.addSubview(editAboutField)
         editAboutField.backgroundColor = .mainLightColor
         editAboutField.text = aboutText.text
         editAboutField.font = UIFont.systemFont(ofSize: 18)
@@ -345,7 +363,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         editNameField.becomeFirstResponder()
         editAboutField.becomeFirstResponder()
         editAvatarField.becomeFirstResponder()
-
+        
         
         NSLayoutConstraint.activate([
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
@@ -395,13 +413,13 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         
         let closeAction = UIAlertAction(title: "Закрыть", style: UIAlertAction.Style.cancel){ (Action) -> Void in }
         /*
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
-            actionSheet.addAction(cameraAction)
-        }
-        
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
-            actionSheet.addAction(galleryAction)
-        }*/
+         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera) {
+         actionSheet.addAction(cameraAction)
+         }
+         
+         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary) {
+         actionSheet.addAction(galleryAction)
+         }*/
         actionSheet.addAction(cameraAction)
         actionSheet.addAction(galleryAction)
         actionSheet.addAction(uploadAction)
@@ -525,7 +543,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
             self.present(alert, animated: true, completion: nil)
         }
     }
-
+    
     func openGallary()
     {
         imagePicker.sourceType = UIImagePickerController.SourceType.photoLibrary
@@ -534,7 +552,7 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
     }
     
     //MARK:-- ImagePicker delegate
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let pickedImage = info[.originalImage] as? UIImage {
             self.avatarImg.image = pickedImage
         }

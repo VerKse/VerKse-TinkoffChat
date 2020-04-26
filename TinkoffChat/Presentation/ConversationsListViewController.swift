@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 @available(iOS 13.0, *)
-class ConversationsListViewController: UIViewController{
+class ConversationsListViewController: UIViewController, UIGestureRecognizerDelegate{
     
     private var onlineData: [ConversationCellModel] = []
     private var historyData: [ConversationCellModel] = []
@@ -17,16 +17,6 @@ class ConversationsListViewController: UIViewController{
     private lazy var reference = db.collection("channels")
     
     private lazy var firebaseService = GeneralFirebaseService(collection: "channel")
-    
-    /*private var tableView : UITableView {
-        let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 44
-        return tableView
-    }*/
     
     let tableView = UITableView(frame: .zero, style: .insetGrouped)
     
@@ -89,18 +79,95 @@ class ConversationsListViewController: UIViewController{
     private lazy var channelList = [Channel]()
     var data = [ConversationCellModel]()
     
+    var mainView: UIView = {
+        var view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .none
+        return view
+    }()
     
+    let longGestureRecognizer = UILongPressGestureRecognizer()
+    let panGestureRecognizer = UIPanGestureRecognizer()
+    let tap = UITapGestureRecognizer()
+    let swipe = UISwipeGestureRecognizer()
+    
+    
+//    @objc func panAction(_ gestureRecognizer: UIPanGestureRecognizer) {
+//        let touchPoint = gestureRecognizer.location(in: self.mainView)
+//        animateAt(touchPoint: touchPoint)
+//    }
+//    
+//    @objc func tapAction(_ gestureRecognizer: UITapGestureRecognizer) {
+//        let touchPoint = gestureRecognizer.location(in: self.mainView)
+//        animateAt(touchPoint: touchPoint)
+//    }
+//    
+//    @objc func swipeAction(_ gestureRecognizer: UISwipeGestureRecognizer) {
+//        let touchPoint = gestureRecognizer.location(in: self.mainView)
+//        animateAt(touchPoint: touchPoint)
+//    }
+//    @objc func longAction(_ gestureRecognizer: UILongPressGestureRecognizer) {
+//        let touchPoint = gestureRecognizer.location(in: self.mainView)
+//        animateAt(touchPoint: touchPoint)
+//    }
+//    
+//    func animateAt (touchPoint: CGPoint){
+//        let rnd = Int.random(in: -5..<5)
+//        let rndRotation = Int.random(in: -4..<4)
+//        let coat = UIImageView(frame: CGRect(x: touchPoint.x+CGFloat(rnd), y: touchPoint.y+CGFloat(rnd), width: 40, height: 40))
+//        coat.image = UIImage(named: "logo.png")
+//        self.mainView.addSubview(coat)
+//        UIView.animateKeyframes(withDuration: 0.7,
+//                                delay: 0.0,
+//                                animations: {
+//                                    UIView.addKeyframe(withRelativeStartTime: 0.1,
+//                                                       relativeDuration: 0.5,
+//                                                       animations: {
+//                                                        coat.transform =
+//                                                            CGAffineTransform(rotationAngle: -.pi / CGFloat(rndRotation))
+//                                    })
+//                                    
+//                                    UIView.addKeyframe(withRelativeStartTime: 0.0,
+//                                                       relativeDuration: 0.5,
+//                                                       animations: {
+//                                                        coat.center.x += CGFloat(rnd)*5.0
+//                                                        coat.center.y -= CGFloat(rnd)*5.0
+//                                    })
+//        },
+//                                completion:  {(completed) in coat.removeFromSuperview()
+//        })
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.addSubview(mainView)
+        NSLayoutConstraint.activate([
+            mainView.topAnchor.constraint(equalTo: view.topAnchor),
+            mainView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mainView.leftAnchor.constraint(equalTo: view.leftAnchor)
+        ])
+        
+//        panGestureRecognizer.addTarget(self, action: #selector(panAction(_:)))
+//        tap.addTarget(self, action: #selector(tapAction(_:)))
+//        swipe.addTarget(self, action: #selector(swipeAction(_:)))
+//        longGestureRecognizer.addTarget(self, action: #selector(longAction(_:)))
+//        //longGestureRecognizer.minimumPressDuration = 0
+//        mainView.addGestureRecognizer(panGestureRecognizer)
+//        mainView.addGestureRecognizer(longGestureRecognizer)
+//        mainView.addGestureRecognizer(tap)
+//        mainView.addGestureRecognizer(swipe)
+        
+        let _ = CoatAnimation.init(viewController: self, view: mainView)
+            
         //MARK: spinner
         /*spinner.isHidden = true
-        spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        view.addSubview(spinner)
-        view.bringSubviewToFront(spinner)
-        spinner.isHidden = false*/
+         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+         view.addSubview(spinner)
+         view.bringSubviewToFront(spinner)
+         spinner.isHidden = false*/
         
         
         //FirebaseApp.configure()
@@ -129,14 +196,14 @@ class ConversationsListViewController: UIViewController{
             self!.tableView.reloadData()
         }
         
-
+        
         //MARK: bottomStack
         bottomView.addSubview(profileButton)
         bottomView.addSubview(addChannelButton)
         bottomView.addSubview(profileLabel)
         bottomView.addSubview(channelLabel)
-               
-        view.addSubview(bottomView)
+        
+        mainView.addSubview(bottomView)
         NSLayoutConstraint.activate([
             bottomView.leftAnchor.constraint(equalTo: view.leftAnchor),
             bottomView.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -174,7 +241,7 @@ class ConversationsListViewController: UIViewController{
         tableView.delegate = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
-        view.addSubview(tableView)
+        mainView.addSubview(tableView)
         tableView.register(ConversationCell.self, forCellReuseIdentifier: String(describing: ConversationCell.self))
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),

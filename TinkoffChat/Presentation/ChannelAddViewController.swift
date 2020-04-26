@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ChannelAddViewController: UIViewController {
+class ChannelAddViewController: UIViewController, UIGestureRecognizerDelegate {
     
     private lazy var backButton = UIButton()
     private lazy var db = Firestore.firestore()
@@ -25,17 +25,39 @@ class ChannelAddViewController: UIViewController {
                                          message: "",
                                          preferredStyle: .alert)
     
+    var mainView: UIView = {
+        var view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .none
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.hideKeyboardWhenTappedAround()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
         view.backgroundColor = .white
+       
+        view.addSubview(mainView)
+        NSLayoutConstraint.activate([
+            mainView.topAnchor.constraint(equalTo: view.topAnchor),
+            mainView.rightAnchor.constraint(equalTo: view.rightAnchor),
+            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mainView.leftAnchor.constraint(equalTo: view.leftAnchor)
+        ])
+        
+        let _ = CoatAnimation.init(viewController: self, view: mainView)
         
         let margins = view.layoutMarginsGuide
         let commitButton = UIButton()
         let insets = CGFloat(10)
         
         //MARK: backButton = UIButton()
-        view.addSubview(backButton)
+        mainView.addSubview(backButton)
         backButton.addTarget(self, action: #selector(backButtonAction(_:)), for: .touchUpInside)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.layer.cornerRadius = 15
@@ -52,7 +74,7 @@ class ChannelAddViewController: UIViewController {
         
         //MARK: commitButton
         commitButton.addTarget(self, action: #selector(commitButtonAction(_:)), for: .touchUpInside)
-        view.addSubview(commitButton)
+        mainView.addSubview(commitButton)
         commitButton.setImage(UIImage.init(named: "tickMainColor.png"), for: .normal)
         commitButton.backgroundColor = .white
         commitButton.layer.cornerRadius = 15
@@ -70,7 +92,7 @@ class ChannelAddViewController: UIViewController {
         ])
         
         //MARK: topicLable
-        view.addSubview(topicLable)
+        mainView.addSubview(topicLable)
         topicLable.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             topicLable.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 60),
@@ -83,7 +105,7 @@ class ChannelAddViewController: UIViewController {
         
         
         //MARK: nameLable+nameTextField
-        view.addSubview(nameLable)
+        mainView.addSubview(nameLable)
         nameLable.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             nameLable.topAnchor.constraint(equalTo: topicLable.bottomAnchor, constant: 60),
@@ -93,7 +115,7 @@ class ChannelAddViewController: UIViewController {
         nameLable.text = "Name:"
         nameLable.font = .boldSystemFont(ofSize: 18)
         nameLable.textColor = .mainColor
-        view.addSubview(nameTextField)
+        mainView.addSubview(nameTextField)
         let underlineAttribute = [NSAttributedString.Key.underlineStyle: NSUnderlineStyle.RawValue(1)]
         nameTextField.attributedText = NSAttributedString(string: "New channel", attributes: underlineAttribute)
         nameTextField.layer.cornerRadius = 10
@@ -105,7 +127,7 @@ class ChannelAddViewController: UIViewController {
         ])
         
         //MARK: messageTextField
-        view.addSubview(messageLable)
+        mainView.addSubview(messageLable)
         messageLable.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             messageLable.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 40),
@@ -115,7 +137,7 @@ class ChannelAddViewController: UIViewController {
         messageLable.text = "First message:"
         messageLable.font = .boldSystemFont(ofSize: 18)
         messageLable.textColor = .mainColor
-        view.addSubview(messageTextField)
+        mainView.addSubview(messageTextField)
         messageTextField.attributedText = NSAttributedString(string: "The channel has been created", attributes: underlineAttribute)
         messageTextField.layer.cornerRadius = 10
         messageTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -166,5 +188,21 @@ class ChannelAddViewController: UIViewController {
         self.nameTextField.endEditing(true)
         self.messageTextField.endEditing(true)
     }
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if mainView.frame.origin.y == 0{
+                
+                mainView.frame.origin.y -= keyboardSize.height
+            }
+        }
+        
+    }
     
+    @objc func keyboardWillHide(_ notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if mainView.frame.origin.y != 0 {
+                mainView.frame.origin.y += keyboardSize.height
+            }
+        }
+    }
 }
