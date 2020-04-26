@@ -173,6 +173,10 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
         return view
     }()
     
+    var panGestureRecognizer = UIPanGestureRecognizer()
+    var longGestureRecognizer = UILongPressGestureRecognizer()
+    var coat = Coat()
+    
     //MARK: Properties
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -185,7 +189,11 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
             mainView.leftAnchor.constraint(equalTo: view.leftAnchor)
         ])
         
-        let _ = CoatAnimation.init(viewController: self, view: mainView)
+        //let _ = CoatAnimation.init(viewController: self, view: mainView)
+        panGestureRecognizer.addTarget(self, action: #selector(panAction(_:)))
+        longGestureRecognizer.addTarget(self, action: #selector(longAction(_:)))
+        mainView.addGestureRecognizer(panGestureRecognizer)
+        mainView.addGestureRecognizer(longGestureRecognizer)
         
         coreDataStack.activate(completion: { _ in })
         coreDataStack.load { (user) in
@@ -378,6 +386,16 @@ class ProfileViewController: UIViewController, UINavigationControllerDelegate, U
     }
     
     //MARK: Actions
+    @objc func panAction(_ gestureRecognizer: UIPanGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: self.view)
+        coat.animateAt(touchPoint: touchPoint, view: self.view)
+    }
+
+    @objc func longAction(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: self.view)
+        coat.animateAt(touchPoint: touchPoint, view: self.view)
+    }
+    
     @objc func updateAvatarAction(_ sender : UIButton) {
         
         let actionSheet = UIAlertController(title: "", message: "Настройте профиль", preferredStyle: UIAlertController.Style.actionSheet)

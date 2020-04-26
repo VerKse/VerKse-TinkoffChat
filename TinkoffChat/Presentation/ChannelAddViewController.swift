@@ -32,6 +32,10 @@ class ChannelAddViewController: UIViewController, UIGestureRecognizerDelegate {
         return view
     }()
     
+    var panGestureRecognizer = UIPanGestureRecognizer()
+    var longGestureRecognizer = UILongPressGestureRecognizer()
+    var coat = Coat()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,7 +54,11 @@ class ChannelAddViewController: UIViewController, UIGestureRecognizerDelegate {
             mainView.leftAnchor.constraint(equalTo: view.leftAnchor)
         ])
         
-        let _ = CoatAnimation.init(viewController: self, view: mainView)
+        //let _ = CoatAnimation.init(viewController: self, view: mainView)
+        panGestureRecognizer.addTarget(self, action: #selector(panAction(_:)))
+        longGestureRecognizer.addTarget(self, action: #selector(longAction(_:)))
+        mainView.addGestureRecognizer(panGestureRecognizer)
+        mainView.addGestureRecognizer(longGestureRecognizer)
         
         let margins = view.layoutMarginsGuide
         let commitButton = UIButton()
@@ -179,6 +187,16 @@ class ChannelAddViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     
     //MARK: Actions
+    @objc func panAction(_ gestureRecognizer: UIPanGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: self.view)
+        coat.animateAt(touchPoint: touchPoint, view: self.view)
+    }
+
+    @objc func longAction(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: self.view)
+        coat.animateAt(touchPoint: touchPoint, view: self.view)
+    }
+    
     @objc func backButtonAction(_ sender : UIButton) {
         backAction()
     }
@@ -195,7 +213,6 @@ class ChannelAddViewController: UIViewController, UIGestureRecognizerDelegate {
                 mainView.frame.origin.y -= keyboardSize.height
             }
         }
-        
     }
     
     @objc func keyboardWillHide(_ notification: Notification) {

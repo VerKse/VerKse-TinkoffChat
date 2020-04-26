@@ -84,10 +84,14 @@ class ConversationViewController: UIViewController, UIGestureRecognizerDelegate{
         return tableView
     }()
     
+    var panGestureRecognizer = UIPanGestureRecognizer()
+    var longGestureRecognizer = UILongPressGestureRecognizer()
+    var coat = Coat()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let _ = CoatAnimation.init(viewController: self, view: view)
+        //let _ = CoatAnimation.init(viewController: self, view: view)
         
         self.hideKeyboardWhenTappedAround()
         
@@ -101,6 +105,10 @@ class ConversationViewController: UIViewController, UIGestureRecognizerDelegate{
         spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         
+        panGestureRecognizer.addTarget(self, action: #selector(panAction(_:)))
+        longGestureRecognizer.addTarget(self, action: #selector(longAction(_:)))
+        view.addGestureRecognizer(panGestureRecognizer)
+        view.addGestureRecognizer(longGestureRecognizer)
         
         //messageService.updateChannelList(tableView: tableView)
         reference.addSnapshotListener { [weak self]snapshot, error in
@@ -235,6 +243,16 @@ extension ConversationViewController : UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    @objc func panAction(_ gestureRecognizer: UIPanGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: self.view)
+        coat.animateAt(touchPoint: touchPoint, view: self.view)
+    }
+
+    @objc func longAction(_ gestureRecognizer: UILongPressGestureRecognizer) {
+        let touchPoint = gestureRecognizer.location(in: self.view)
+        coat.animateAt(touchPoint: touchPoint, view: self.view)
     }
 }
 
