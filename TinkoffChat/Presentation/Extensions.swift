@@ -9,7 +9,7 @@
 
 import UIKit
 
-struct Channel {
+struct Channel: Equatable {
     let identifier: String
     let name: String?
     let lastMessage: String?

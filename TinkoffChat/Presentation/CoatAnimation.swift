@@ -44,28 +44,28 @@ class CoatAnimation{
     
     var view: UIView
     
-    var tapGestureRecognizer = UITapGestureRecognizer()
+//    var tapGestureRecognizer = UITapGestureRecognizer()
     var longGestureRecognizer = UILongPressGestureRecognizer()
     var panGestureRecognizer = UIPanGestureRecognizer()
-    var pinchGestureRecognizer = UIPinchGestureRecognizer()
-    var rotationGestureRecognizer = UIRotationGestureRecognizer()
-    var swipeGestureRecognizer = UISwipeGestureRecognizer()
-    var screenGestureRecognizer = UIScreenEdgePanGestureRecognizer()
+//    var pinchGestureRecognizer = UIPinchGestureRecognizer()
+//    var rotationGestureRecognizer = UIRotationGestureRecognizer()
+//    var swipeGestureRecognizer = UISwipeGestureRecognizer()
+//    var screenGestureRecognizer = UIScreenEdgePanGestureRecognizer()
     
     init(viewController: UIGestureRecognizerDelegate, view: UIView) {
         self.view = view
         
         view.isUserInteractionEnabled = true
         
-        tapGestureRecognizer.addTarget(self, action: #selector(self.tapAction(_:)))
+        panGestureRecognizer.addTarget(self, action: #selector(self.panAction(_:)))
         longGestureRecognizer.addTarget(self, action: #selector(self.longAction(_:)))
         longGestureRecognizer.delegate = viewController
-        tapGestureRecognizer.delegate = viewController
-        self.view.addGestureRecognizer(tapGestureRecognizer)
+        panGestureRecognizer.delegate = viewController
+        self.view.addGestureRecognizer(panGestureRecognizer)
         self.view.addGestureRecognizer(longGestureRecognizer)
     }
     
-    @objc func tapAction(_ gestureRecognizer: UITapGestureRecognizer) {
+    @objc func panAction(_ gestureRecognizer: UITapGestureRecognizer) {
         
         let touchPoint = gestureRecognizer.location(in: self.view)
         animateAt(touchPoint: touchPoint)

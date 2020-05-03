@@ -10,6 +10,9 @@
 		1BBEA536AEB732231AA5D86D /* Pods_TinkoffChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F5BADAAD5BFCDC45CCA4AAD /* Pods_TinkoffChat.framework */; };
 		4463269B2455996A00DF5DF6 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 4463269A2455996A00DF5DF6 /* logo.png */; };
 		4463269D24559B3900DF5DF6 /* CoatAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4463269C24559B3900DF5DF6 /* CoatAnimation.swift */; };
+		44CC86DC245F30C100A51F91 /* ChannelSorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CC86DB245F30C100A51F91 /* ChannelSorter.swift */; };
+		44CC86DF245F363B00A51F91 /* IChannelsSorter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CC86DE245F363B00A51F91 /* IChannelsSorter.swift */; };
+		44CC86E5245F36FE00A51F91 /* ChannelsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CC86E4245F36FE00A51F91 /* ChannelsTest.swift */; };
 		AA0636BD2413F47B0090E2EA /* Play-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E89240A615300557835 /* Play-Bold.ttf */; };
 		AA0636BE2413F47B0090E2EA /* Play-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E8A240A615300557835 /* Play-Regular.ttf */; };
 		AA0636BF2413F47B0090E2EA /* RobotoSlab-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AADE9E8B240A616D00557835 /* RobotoSlab-ExtraLight.ttf */; };
@@ -72,6 +75,9 @@
 /* Begin PBXFileReference section */
 		4463269A2455996A00DF5DF6 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		4463269C24559B3900DF5DF6 /* CoatAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoatAnimation.swift; sourceTree = "<group>"; };
+		44CC86DB245F30C100A51F91 /* ChannelSorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSorter.swift; sourceTree = "<group>"; };
+		44CC86DE245F363B00A51F91 /* IChannelsSorter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IChannelsSorter.swift; sourceTree = "<group>"; };
+		44CC86E4245F36FE00A51F91 /* ChannelsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsTest.swift; sourceTree = "<group>"; };
 		61687BEBA439033AB9F42F23 /* Pods-TinkoffChatTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TinkoffChatTests.debug.xcconfig"; path = "Target Support Files/Pods-TinkoffChatTests/Pods-TinkoffChatTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6F5BADAAD5BFCDC45CCA4AAD /* Pods_TinkoffChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TinkoffChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8484C86936E284EA31613FC7 /* Pods_TinkoffChatTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TinkoffChatTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -171,6 +177,22 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		44CC86DD245F362800A51F91 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				44CC86DE245F363B00A51F91 /* IChannelsSorter.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		44CC86E6245F550000A51F91 /* SupportingClasses */ = {
+			isa = PBXGroup;
+			children = (
+				44CC86DB245F30C100A51F91 /* ChannelSorter.swift */,
+			);
+			path = SupportingClasses;
+			sourceTree = "<group>";
+		};
 		AA6B5810242F6E5700AEB30B /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -254,6 +276,9 @@
 		AA8BBF2F23F9417700D754AE /* TinkoffChatTests */ = {
 			isa = PBXGroup;
 			children = (
+				44CC86E4245F36FE00A51F91 /* ChannelsTest.swift */,
+				44CC86E6245F550000A51F91 /* SupportingClasses */,
+				44CC86DD245F362800A51F91 /* Protocols */,
 				AA8BBF3023F9417700D754AE /* TinkoffChatTests.swift */,
 				AA8BBF3223F9417700D754AE /* Info.plist */,
 			);
@@ -516,6 +541,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44CC86DF245F363B00A51F91 /* IChannelsSorter.swift in Sources */,
+				44CC86E5245F36FE00A51F91 /* ChannelsTest.swift in Sources */,
+				44CC86DC245F30C100A51F91 /* ChannelSorter.swift in Sources */,
 				AA8BBF3123F9417700D754AE /* TinkoffChatTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
