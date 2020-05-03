@@ -42,7 +42,7 @@ final class ChannelsSorter: IChannelsSorter {
             
             switch isOnlineReturn {
             case true:
-                if (channel.lastActivity!>Date.init(timeIntervalSinceNow: -10*60)){
+                if (channel.lastActivity!>=Date.init(timeIntervalSinceNow: -10*60)){
                     channelArray.append(channel)
                 }
             case false:
